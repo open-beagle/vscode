@@ -1,0 +1,12 @@
+ARG BASE
+
+FROM $BASE
+
+ARG AUTHOR
+ARG VERSION
+LABEL maintainer=${AUTHOR} version=${VERSION}
+
+ENV CHECK_FILE=.local/share/code-server/languagepacks.json
+
+COPY ./share/code-server/extensions/* /data/input/.local/share/code-server/extensions/
+COPY ./share/code-server/languagepacks.json /data/input/.local/share/code-server/languagepacks.json
