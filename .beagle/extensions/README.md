@@ -7,7 +7,7 @@ docker build \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
   --build-arg VERSION=0.24.2 \
   --tag registry.cn-qingdao.aliyuncs.com/wod/code-server-go-extensions:0.24.2 \
-  --file .beagle/extensions/dockerfile .local
+  --file /data/volumes/vscode-code-server-pvc-e242f8de-b945-43c2-bd80-0838cf478003/.beagle/extensions/dockerfile /data/volumes/vscode-code-server-pvc-e242f8de-b945-43c2-bd80-0838cf478003/.local
 
 docker push registry.cn-qingdao.aliyuncs.com/wod/code-server-go-extensions:0.24.2
 ```
