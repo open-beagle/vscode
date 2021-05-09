@@ -1,6 +1,6 @@
 {
-	"nameShort": "code-server",
-	"nameLong": "code-server",
+	"nameShort": "Beagle-CloudIDE",
+	"nameLong": "Beagle-CloudIDE",
 	"applicationName": "code-oss",
 	"dataFolderName": ".vscode-oss",
 	"win32MutexName": "vscodeoss",

@@ -1,0 +1,188 @@
+platform: 10.11.92.35
+
+workspace:
+  base: /go
+  path: src/gitlab.wodcloud.com/cloud/vscode
+
+clone:
+
+  git:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-git:1.0
+    dns: 223.5.5.5
+    when:
+      branch:
+        - dev
+
+pipeline:
+
+  read-cache:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    restore: true
+    check: yarn.lock
+    mount:
+      - ./node_modules
+      - ./lib/vscode/node_modules
+      - ./lib/vscode/build/node_modules
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev
+
+  build-node:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster
+    dns: 223.5.5.5
+    volumes:
+      - /data/cache/yarn/:/usr/local/share/.cache/yarn
+    commands:
+      - yarn
+      - yarn build
+      - yarn build:vscode
+      - yarn release
+      - yarn release:standalone
+      - yarn test:standalone-release
+      - yarn package
+    when:
+      branch:
+        - dev
+
+  store-cache:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    rebuild: true
+    check: yarn.lock
+    mount:
+      - ./node_modules
+      - ./lib/vscode/node_modules
+      - ./lib/vscode/build/node_modules
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev
+
+  docker:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
+    dns: 223.5.5.5
+    pull: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock    
+    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster
+    dockerfile: .beagle/dockerfile
+    repo: wod/awecloud-vscode
+    version: "v3.9.3"
+    channel: alpha
+    args: "TARGETOS=linux,TARGETARCH=amd64"
+    registry: registry.cn-qingdao.aliyuncs.com
+    secrets: 
+      - source: REGISTRY_USER_ALIYUN
+        target: REGISTRY_USER
+      - source: REGISTRY_PASSWORD_ALIYUN
+        target: REGISTRY_PASSWORD
+    when:
+      branch: 
+        - dev
+
+  harbor:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker-tag:1.0
+    dns: 223.5.5.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3
+    registry: registry.cn-qingdao.aliyuncs.com
+    secrets: 
+      - source: REGISTRY_USER_ALIYUN
+        target: REGISTRY_USER
+      - source: REGISTRY_PASSWORD_ALIYUN
+        target: REGISTRY_PASSWORD
+    when:
+      branch: 
+        - master
+
+  read-cache-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    restore: true
+    check: yarn.lock
+    mount:
+      - ./node_modules
+      - ./lib/vscode/node_modules
+      - ./lib/vscode/build/node_modules
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev-arm64
+
+  build-node-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster-arm64
+    dns: 223.5.5.5
+    volumes:
+      - /data/cache/yarn/:/usr/local/share/.cache/yarn
+    commands:
+      - yarn
+      - yarn build
+      - yarn build:vscode
+      - yarn release
+      - yarn release:standalone
+      - yarn test:standalone-release
+      - yarn package
+    when:
+      branch:
+        - dev-arm64
+
+  store-cache-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    rebuild: true
+    check: yarn.lock
+    mount:
+      - ./node_modules
+      - ./lib/vscode/node_modules
+      - ./lib/vscode/build/node_modules
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev-arm64
+
+  docker-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
+    dns: 223.5.5.5
+    pull: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock    
+    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-arm64
+    dockerfile: .beagle/dockerfile
+    repo: wod/awecloud-vscode
+    version: "v3.9.3"
+    channel: alpha-arm64
+    args: "TARGETOS=linux,TARGETARCH=arm64"
+    registry: registry.cn-qingdao.aliyuncs.com
+    secrets: 
+      - source: REGISTRY_USER_ALIYUN
+        target: REGISTRY_USER
+      - source: REGISTRY_PASSWORD_ALIYUN
+        target: REGISTRY_PASSWORD
+    when:
+      branch: 
+        - dev-arm64
+
+  harbor-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker-tag:1.0
+    dns: 223.5.5.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-arm64
+    registry: registry.cn-qingdao.aliyuncs.com
+    secrets: 
+      - source: REGISTRY_USER_ALIYUN
+        target: REGISTRY_USER
+      - source: REGISTRY_PASSWORD_ALIYUN
+        target: REGISTRY_PASSWORD
+    when:
+      branch: 
+        - master

@@ -1,6 +1,6 @@
 {
-  "name": "code-server",
-  "short_name": "code-server",
+  "name": "Beagle-CloudIDE",
+  "short_name": "Beagle-CloudIDE",
   "start_url": "{{BASE}}",
   "display": "fullscreen",
   "background-color": "#fff",
