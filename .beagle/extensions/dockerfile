@@ -8,6 +8,12 @@ LABEL maintainer=${AUTHOR} version=${VERSION}
 
 ENV CHECK_FILE=.local/share/code-server/languagepacks.json
 
-COPY ./share/code-server/extensions/ /data/input/.local/share/code-server/extensions/
-COPY ./share/code-server/User/*.json /data/input/.local/share/code-server/User/
-COPY ./share/code-server/languagepacks.json /data/input/.local/share/code-server/languagepacks.json
+COPY ./.local/share/code-server/ /data/input/.local/share/code-server/
+
+COPY ./go1.16.3/ /data/input/go1.16.3/
+COPY ./node-v14.16.1/ /data/input/node-v14.16.1/
+COPY ./yarn-v1.22.10/ /data/input/yarn-v1.22.10/
+
+COPY ./go/bin/ /data/input/go/bin/
+
+COPY ./.bashrc /data/input/.bashrc

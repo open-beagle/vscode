@@ -1,2 +1,6 @@
-**
-!.local
+go/src
+go/pkg
+.cache/
+.yarn/
+.npm/
+machineid
