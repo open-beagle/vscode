@@ -9,9 +9,6 @@ clone:
   git:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-git:1.0
     dns: 223.5.5.5
-    when:
-      branch:
-        - dev
 
 pipeline:
 
