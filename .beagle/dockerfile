@@ -6,23 +6,6 @@ ARG AUTHOR
 ARG VERSION
 LABEL maintainer=${AUTHOR} version=${VERSION}
 
-RUN apt-get update \
- && apt-get install -y \
-    curl \
-    dumb-init \
-    zsh \
-    htop \
-    locales \
-    man \
-    nano \
-    git \
-    procps \
-    openssh-client \
-    sudo \
-    vim.tiny \
-    lsb-release \
-  && rm -rf /var/lib/apt/lists/*
-
 # https://wiki.debian.org/Locale#Manually
 RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
   && locale-gen

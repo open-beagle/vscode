@@ -156,7 +156,7 @@ pipeline:
     pull: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock    
-    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster
+    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode
     dockerfile: .beagle/dockerfile
     repo: wod/awecloud-vscode
     version: "v3.9.3"
@@ -209,7 +209,7 @@ pipeline:
     pull: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock    
-    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-arm64
+    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64
     dockerfile: .beagle/dockerfile
     repo: wod/awecloud-vscode
     version: "v3.9.3"
