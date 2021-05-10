@@ -29,13 +29,13 @@ yarn package
 
 # image
 docker build \
-  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
   --build-arg VERSION=v3.9.3 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/code-server:v3.9.3-alpha \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/code-server:v3.9.3-alpha
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
 
 # cache
 docker run \
