@@ -27,16 +27,6 @@ yarn release:standalone
 yarn test:standalone-release
 yarn package
 
-# image
-docker build \
-  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode \
-  --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.9.3 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha \
-  --file .beagle/dockerfile .
-
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
-
 # cache
 docker run \
 --rm \
@@ -49,7 +39,11 @@ docker run \
 -e DRONE_COMMIT_BRANCH=dev \
 -e CI_WORKSPACE=/go/src/gitlab.wodcloud.com/cloud/vscode \
 registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+```
 
+## image amd64
+
+```bash
 # release-container
 docker run \
 -it \
@@ -58,17 +52,33 @@ docker run \
 -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
 -w /go/src/gitlab.wodcloud.com/cloud/vscode \
 registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster \
-bash -c '
+bash 
+
 yarn && \
 yarn build && \
 yarn build:vscode && \
 yarn release && \
 yarn release:standalone && \
 yarn test:standalone-release && \
-yarn package
-'
+yarn package && \
+exit
 
-yarn clean
+# image
+docker build \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode \
+  --build-arg AUTHOR=shucheng@bd-apaas.com \
+  --build-arg VERSION=v3.9.3 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha \
+  --file .beagle/dockerfile .
+
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
+```
+
+## image arm64
+
+```bash
+# clean 
+rm -rf release-gcp release-packages release-standalone
 
 # release-container arm64
 docker run \
@@ -78,9 +88,20 @@ docker run \
 -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
 -w /go/src/gitlab.wodcloud.com/cloud/vscode \
 registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster-arm64 \
-bash -c '
+bash
+
 yarn release:standalone && \
 yarn test:standalone-release && \
-yarn package
-'
+yarn package && \
+exit
+
+# image arm64
+docker build \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64 \
+  --build-arg AUTHOR=shucheng@bd-apaas.com \
+  --build-arg VERSION=v3.9.3 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64 \
+  --file .beagle/dockerfile .
+
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64
 ```
