@@ -159,7 +159,7 @@ pipeline:
   #   base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode
   #   dockerfile: .beagle/dockerfile
   #   repo: wod/awecloud-vscode
-  #   version: "v3.9.3"
+  #   version: "v3.10.0"
   #   channel: alpha
   #   args: "TARGETOS=linux,TARGETARCH=amd64"
   #   registry: registry.cn-qingdao.aliyuncs.com
@@ -177,8 +177,8 @@ pipeline:
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0
     registry: registry.cn-qingdao.aliyuncs.com
     secrets: 
       - source: REGISTRY_USER_ALIYUN
@@ -212,7 +212,7 @@ pipeline:
   #   base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64
   #   dockerfile: .beagle/dockerfile
   #   repo: wod/awecloud-vscode
-  #   version: "v3.9.3"
+  #   version: "v3.10.0"
   #   channel: alpha-arm64
   #   args: "TARGETOS=linux,TARGETARCH=arm64"
   #   registry: registry.cn-qingdao.aliyuncs.com
@@ -230,8 +230,8 @@ pipeline:
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-arm64
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-arm64
     registry: registry.cn-qingdao.aliyuncs.com
     secrets: 
       - source: REGISTRY_USER_ALIYUN

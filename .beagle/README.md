@@ -6,7 +6,7 @@ Run VS Code on any machine anywhere and access it in the browser.
 ```bash
 git remote add upstream git@gitlab.wodcloud.com:cdr/code-server.git
 git fetch upstream
-git merge v3.9.3
+git merge v3.10.0
 ```
 
 ## debug
@@ -67,11 +67,11 @@ exit
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.9.3 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha \
+  --build-arg VERSION=v3.10.0 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha
 ```
 
 ## image arm64
@@ -99,9 +99,9 @@ exit
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64 \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.9.3 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64 \
+  --build-arg VERSION=v3.10.0 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64 \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64
 ```
