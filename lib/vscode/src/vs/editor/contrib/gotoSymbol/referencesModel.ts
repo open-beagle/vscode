@@ -23,16 +23,21 @@ export class OneReference {
 
 	readonly id: string = defaultGenerator.nextId();
 
+	private _range?: IRange;
+
 	constructor(
 		readonly isProviderFirst: boolean,
 		readonly parent: FileReferences,
-		readonly uri: URI,
-		private _range: IRange,
+		readonly link: LocationLink,
 		private _rangeCallback: (ref: OneReference) => void
 	) { }
 
+	get uri() {
+		return this.link.uri;
+	}
+
 	get range(): IRange {
-		return this._range;
+		return this._range ?? this.link.targetSelectionRange ?? this.link.range;
 	}
 
 	set range(value: IRange) {
@@ -172,8 +177,7 @@ export class ReferencesModel implements IDisposable {
 				const oneRef = new OneReference(
 					providersFirst === link,
 					current,
-					link.uri,
-					link.targetSelectionRange || link.range,
+					link,
 					ref => this._onDidChangeReferenceRange.fire(ref)
 				);
 				this.references.push(oneRef);

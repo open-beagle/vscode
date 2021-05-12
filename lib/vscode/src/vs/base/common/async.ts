@@ -8,6 +8,7 @@ import { canceled, onUnexpectedError } from 'vs/base/common/errors';
 import { Emitter, Event, Listener } from 'vs/base/common/event';
 import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
 import { LinkedList } from 'vs/base/common/linkedList';
+import { extUri as defaultExtUri, IExtUri } from 'vs/base/common/resources';
 import { URI } from 'vs/base/common/uri';
 
 export function isThenable<T>(obj: unknown): obj is Promise<T> {
@@ -380,7 +381,7 @@ export class AutoOpenBarrier extends Barrier {
 		this._timeout = setTimeout(() => this.open(), autoOpenTimeMs);
 	}
 
-	open(): void {
+	override open(): void {
 		clearTimeout(this._timeout);
 		super.open();
 	}
@@ -592,19 +593,21 @@ export class ResourceQueue implements IDisposable {
 
 	private readonly queues = new Map<string, Queue<void>>();
 
-	queueFor(resource: URI): Queue<void> {
-		const key = resource.toString();
-		if (!this.queues.has(key)) {
-			const queue = new Queue<void>();
-			queue.onFinished(() => {
-				queue.dispose();
+	queueFor(resource: URI, extUri: IExtUri = defaultExtUri): Queue<void> {
+		const key = extUri.getComparisonKey(resource);
+
+		let queue = this.queues.get(key);
+		if (!queue) {
+			queue = new Queue<void>();
+			Event.once(queue.onFinished)(() => {
+				queue?.dispose();
 				this.queues.delete(key);
 			});
 
 			this.queues.set(key, queue);
 		}
 
-		return this.queues.get(key)!;
+		return queue;
 	}
 
 	dispose(): void {
@@ -769,7 +772,7 @@ export class RunOnceWorker<T> extends RunOnceScheduler {
 		}
 	}
 
-	protected doRun(): void {
+	protected override doRun(): void {
 		const units = this.units;
 		this.units = [];
 
@@ -778,7 +781,7 @@ export class RunOnceWorker<T> extends RunOnceScheduler {
 		}
 	}
 
-	dispose(): void {
+	override dispose(): void {
 		this.units = [];
 
 		super.dispose();
@@ -939,7 +942,7 @@ export class TaskSequentializer {
 	}
 
 	setPending(taskId: number, promise: Promise<void>, onCancel?: () => void,): Promise<void> {
-		this._pending = { taskId: taskId, cancel: () => onCancel?.(), promise };
+		this._pending = { taskId, cancel: () => onCancel?.(), promise };
 
 		promise.then(() => this.donePending(taskId), () => this.donePending(taskId));
 
@@ -1176,7 +1179,7 @@ export namespace Promises {
 	 * Interface of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
 	 */
 	interface PromiseWithAllSettled<T> {
-		allSettled<T>(promises: Promise<T>[]): Promise<ReadonlyArray<IResolvedPromise<T> | IRejectedPromise>>;
+		allSettled<T>(promises: Promise<T>[]): Promise<readonly (IResolvedPromise<T> | IRejectedPromise)[]>;
 	}
 
 	/**
@@ -1185,7 +1188,7 @@ export namespace Promises {
 	 * in the order of the original passed in promises array.
 	 * See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
 	 */
-	export async function allSettled<T>(promises: Promise<T>[]): Promise<ReadonlyArray<IResolvedPromise<T> | IRejectedPromise>> {
+	export async function allSettled<T>(promises: Promise<T>[]): Promise<readonly (IResolvedPromise<T> | IRejectedPromise)[]> {
 		if (typeof (Promise as unknown as PromiseWithAllSettled<T>).allSettled === 'function') {
 			return allSettledNative(promises); // in some environments we can benefit from native implementation
 		}
@@ -1193,11 +1196,11 @@ export namespace Promises {
 		return allSettledShim(promises);
 	}
 
-	async function allSettledNative<T>(promises: Promise<T>[]): Promise<ReadonlyArray<IResolvedPromise<T> | IRejectedPromise>> {
+	async function allSettledNative<T>(promises: Promise<T>[]): Promise<readonly (IResolvedPromise<T> | IRejectedPromise)[]> {
 		return (Promise as unknown as PromiseWithAllSettled<T>).allSettled(promises);
 	}
 
-	async function allSettledShim<T>(promises: Promise<T>[]): Promise<ReadonlyArray<IResolvedPromise<T> | IRejectedPromise>> {
+	async function allSettledShim<T>(promises: Promise<T>[]): Promise<readonly (IResolvedPromise<T> | IRejectedPromise)[]> {
 		return Promise.all(promises.map(promise => (promise.then(value => {
 			const fulfilled: IResolvedPromise<T> = { status: 'fulfilled', value };
 

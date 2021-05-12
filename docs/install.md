@@ -10,7 +10,6 @@
 - [Fedora, CentOS, RHEL, SUSE](#fedora-centos-rhel-suse)
 - [Arch Linux](#arch-linux)
 - [Termux](#termux)
-  - [Known Search Issue](#known-search-issue)
 - [yarn, npm](#yarn-npm)
 - [macOS](#macos)
 - [Standalone Releases](#standalone-releases)
@@ -93,8 +92,8 @@ NOTE: The standalone arm64 .deb does not support Ubuntu <16.04.
 Please upgrade or [build with yarn](#yarn-npm).
 
 ```bash
-curl -fOL https://github.com/cdr/code-server/releases/download/v3.9.3/code-server_3.9.3_amd64.deb
-sudo dpkg -i code-server_3.9.3_amd64.deb
+curl -fOL https://github.com/cdr/code-server/releases/download/v3.10.0/code-server_3.10.0_amd64.deb
+sudo dpkg -i code-server_3.10.0_amd64.deb
 sudo systemctl enable --now code-server@$USER
 # Now visit http://127.0.0.1:8080. Your password is in ~/.config/code-server/config.yaml
 ```
@@ -105,8 +104,8 @@ NOTE: The standalone arm64 .rpm does not support CentOS 7.
 Please upgrade or [build with yarn](#yarn-npm).
 
 ```bash
-curl -fOL https://github.com/cdr/code-server/releases/download/v3.9.3/code-server-3.9.3-amd64.rpm
-sudo rpm -i code-server-3.9.3-amd64.rpm
+curl -fOL https://github.com/cdr/code-server/releases/download/v3.10.0/code-server-3.10.0-amd64.rpm
+sudo rpm -i code-server-3.10.0-amd64.rpm
 sudo systemctl enable --now code-server@$USER
 # Now visit http://127.0.0.1:8080. Your password is in ~/.config/code-server/config.yaml
 ```
@@ -131,32 +130,7 @@ sudo systemctl enable --now code-server@$USER
 
 ## Termux
 
-Termux is an Android terminal application and Linux environment, which can also run code-server from your phone.
-
-1. Install Termux from the [Google Play Store](https://play.google.com/store/apps/details?id=com.termux&hl=en_US&gl=US)
-2. Make sure it's up-to-date by running `apt update && apt upgrade`
-3. Install required packages: `apt install build-essential python git nodejs yarn`
-4. Install code-server: `yarn global add code-server`
-5. Run code-server: `code-server` and navigate to localhost:8080 in your browser
-
-To upgrade run: `yarn global upgrade code-server --latest`
-
-### Known Search Issue
-
-There is a known issue with search not working on Android because it's missing `bin/rg`. To fix:
-
-1. Install `ripgrep` with `pkg`
-   ```sh
-   pkg install ripgrep
-   ```
-2. Make a soft link using `ln -s`
-
-```sh
-# run this command inside the code-server directory
-ln -s $PREFIX/bin/rg ./lib/vscode/node_modules/vscode-ripgrep/bin/rg
-```
-
-For more context, see [comment](https://github.com/cdr/code-server/issues/1730#issuecomment-721515979).
+Please see "Installation" in the [Termux docs](./termux.md#installation)
 
 ## yarn, npm
 
@@ -205,10 +179,10 @@ Here is an example script for installing and using a standalone `code-server` re
 
 ```bash
 mkdir -p ~/.local/lib ~/.local/bin
-curl -fL https://github.com/cdr/code-server/releases/download/v3.9.3/code-server-3.9.3-linux-amd64.tar.gz \
+curl -fL https://github.com/cdr/code-server/releases/download/v3.10.0/code-server-3.10.0-linux-amd64.tar.gz \
   | tar -C ~/.local/lib -xz
-mv ~/.local/lib/code-server-3.9.3-linux-amd64 ~/.local/lib/code-server-3.9.3
-ln -s ~/.local/lib/code-server-3.9.3/bin/code-server ~/.local/bin/code-server
+mv ~/.local/lib/code-server-3.10.0-linux-amd64 ~/.local/lib/code-server-3.10.0
+ln -s ~/.local/lib/code-server-3.10.0/bin/code-server ~/.local/bin/code-server
 PATH="~/.local/bin:$PATH"
 code-server
 # Now visit http://127.0.0.1:8080. Your password is in ~/.config/code-server/config.yaml

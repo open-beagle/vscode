@@ -19,7 +19,13 @@ main() {
   fi
 
   if ! [ -f ./lib/coder-cloud-agent ]; then
+    echo "Downloading the cloud agent..."
+
+    # for arch; we do not use OS from lib.sh and get our own.
+    # lib.sh normalizes macos to darwin - but cloud-agent's binaries do not
+    source ./ci/lib.sh
     OS="$(uname | tr '[:upper:]' '[:lower:]')"
+
     set +e
     # curl -fsSL "https://storage.googleapis.com/coder-cloud-releases/agent/latest/$OS/cloud-agent" -o ./lib/coder-cloud-agent
     curl -fsSL "https://dl.wodcloud.com/vscode/coder-cloud-agent/cloud-agent" -o ./lib/coder-cloud-agent

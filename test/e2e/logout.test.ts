@@ -1,27 +1,40 @@
-/// <reference types="jest-playwright-preset" />
+import { test, expect } from "@playwright/test"
 import { CODE_SERVER_ADDRESS, PASSWORD } from "../utils/constants"
+import { CodeServer } from "./models/CodeServer"
 
-describe("logout", () => {
-  beforeEach(async () => {
-    await jestPlaywright.resetBrowser()
-    await page.goto(CODE_SERVER_ADDRESS, { waitUntil: "networkidle" })
+test.describe("logout", () => {
+  // Reset the browser so no cookies are persisted
+  // by emptying the storageState
+  const options = {
+    contextOptions: {
+      storageState: {},
+    },
+  }
+  let codeServer: CodeServer
+
+  test.beforeEach(async ({ page }) => {
+    codeServer = new CodeServer(page)
+    await codeServer.navigate()
   })
 
-  it("should be able login and logout", async () => {
+  test("should be able login and logout", options, async ({ page }) => {
     // Type in password
     await page.fill(".password", PASSWORD)
     // Click the submit button and login
     await page.click(".submit")
     await page.waitForLoadState("networkidle")
+    // We do this because occassionally code-server doesn't load on Firefox
+    // but loads if you reload once or twice
+    await codeServer.reloadUntilEditorIsReady()
     // Make sure the editor actually loaded
-    expect(await page.isVisible("div.monaco-workbench"))
+    expect(await codeServer.isEditorVisible()).toBe(true)
 
     // Click the Application menu
     await page.click("[aria-label='Application Menu']")
 
     // See the Log out button
     const logoutButton = "a.action-menu-item span[aria-label='Log out']"
-    expect(await page.isVisible(logoutButton))
+    expect(await page.isVisible(logoutButton)).toBe(true)
 
     await page.hover(logoutButton)
     // TODO(@jsjoeio)

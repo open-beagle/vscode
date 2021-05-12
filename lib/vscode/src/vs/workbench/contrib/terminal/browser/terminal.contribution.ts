@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
 import 'vs/css!./media/scrollbar';
 import 'vs/css!./media/terminal';
 import 'vs/css!./media/widgets';
@@ -26,7 +25,7 @@ import { setupTerminalMenu } from 'vs/workbench/contrib/terminal/common/terminal
 import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
 import { TerminalService } from 'vs/workbench/contrib/terminal/browser/terminalService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IRemoteTerminalService, ITerminalService, WindowsShellType } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { IRemoteTerminalService, ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
 import { IQuickAccessRegistry, Extensions as QuickAccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
@@ -35,6 +34,9 @@ import { terminalConfiguration } from 'vs/workbench/contrib/terminal/common/term
 import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
 import { terminalViewIcon } from 'vs/workbench/contrib/terminal/browser/terminalIcons';
 import { RemoteTerminalService } from 'vs/workbench/contrib/terminal/browser/remoteTerminalService';
+import { isIPad } from 'vs/base/browser/browser';
+import { WindowsShellType } from 'vs/platform/terminal/common/terminal';
+import { isWindows } from 'vs/base/common/platform';
 
 // Register services
 registerSingleton(ITerminalService, TerminalService, true);
@@ -112,10 +114,18 @@ const CTRL_LETTER_OFFSET = 64;
 // shell, this gets handled by PSReadLine which properly handles multi-line pastes. This is
 // disabled in accessibility mode as PowerShell does not run PSReadLine when it detects a screen
 // reader. This works even when clipboard.readText is not supported.
-if (platform.isWindows) {
+if (isWindows) {
 	registerSendSequenceKeybinding(String.fromCharCode('V'.charCodeAt(0) - CTRL_LETTER_OFFSET), { // ctrl+v
 		when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, ContextKeyExpr.equals(KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, WindowsShellType.PowerShell), CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_V
+	});
+}
+
+// send ctrl+c to the iPad when the terminal is focused and ctrl+c is pressed to kill the process (work around for #114009)
+if (isIPad) {
+	registerSendSequenceKeybinding(String.fromCharCode('C'.charCodeAt(0) - CTRL_LETTER_OFFSET), { // ctrl+c
+		when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS),
+		primary: KeyMod.WinCtrl | KeyCode.KEY_C
 	});
 }
 
@@ -124,7 +134,7 @@ registerSendSequenceKeybinding(String.fromCharCode('W'.charCodeAt(0) - CTRL_LETT
 	primary: KeyMod.CtrlCmd | KeyCode.Backspace,
 	mac: { primary: KeyMod.Alt | KeyCode.Backspace }
 });
-if (platform.isWindows) {
+if (isWindows) {
 	// Delete word left: ctrl+h
 	// Windows cmd.exe requires ^H to delete full word left
 	registerSendSequenceKeybinding(String.fromCharCode('H'.charCodeAt(0) - CTRL_LETTER_OFFSET), {
