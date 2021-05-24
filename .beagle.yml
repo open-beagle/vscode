@@ -4,189 +4,187 @@ workspace:
   base: /go
   path: src/gitlab.wodcloud.com/cloud/vscode
 
-# clone:
-
-#   git:
-#     image: registry.cn-qingdao.aliyuncs.com/wod/devops-git:1.0
-#     dns: 223.5.5.5
-#     when:
-#       branch:
-#         - dev
+clone:
+  git:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-git:1.0
+    dns: 223.5.5.5
+    when:
+      branch:
+        - dev
 
 pipeline:
+  read-cache:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    restore: true
+    check: yarn.lock
+    mount:
+      - ./lib/coder-cloud-agent
+      - ./lib/vscode/build/lib/watch/node_modules/
+      - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/extensions/configuration-editing/node_modules/
+      - ./lib/vscode/extensions/css-language-features/node_modules/
+      - ./lib/vscode/extensions/css-language-features/server/node_modules/
+      - ./lib/vscode/extensions/debug-auto-launch/node_modules/
+      - ./lib/vscode/extensions/debug-server-ready/node_modules/
+      - ./lib/vscode/extensions/emmet/node_modules/
+      - ./lib/vscode/extensions/extension-editing/node_modules/
+      - ./lib/vscode/extensions/git-ui/node_modules/
+      - ./lib/vscode/extensions/git/node_modules/
+      - ./lib/vscode/extensions/github-authentication/node_modules/
+      - ./lib/vscode/extensions/github/node_modules/
+      - ./lib/vscode/extensions/grunt/node_modules/
+      - ./lib/vscode/extensions/gulp/node_modules/
+      - ./lib/vscode/extensions/html-language-features/node_modules/
+      - ./lib/vscode/extensions/html-language-features/server/node_modules/
+      - ./lib/vscode/extensions/image-preview/node_modules/
+      - ./lib/vscode/extensions/jake/node_modules/
+      - ./lib/vscode/extensions/json-language-features/node_modules/
+      - ./lib/vscode/extensions/json-language-features/server/node_modules/
+      - ./lib/vscode/extensions/markdown-language-features/node_modules/
+      - ./lib/vscode/extensions/merge-conflict/node_modules/
+      - ./lib/vscode/extensions/microsoft-authentication/node_modules/
+      - ./lib/vscode/extensions/node_modules/
+      - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
+      - ./lib/vscode/extensions/npm/node_modules/
+      - ./lib/vscode/extensions/php-language-features/node_modules/
+      - ./lib/vscode/extensions/search-result/node_modules/
+      - ./lib/vscode/extensions/simple-browser/node_modules/
+      - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
+      - ./lib/vscode/extensions/typescript-language-features/node_modules/
+      - ./lib/vscode/extensions/vscode-api-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
+      - ./lib/vscode/node_modules/
+      - ./lib/vscode/remote/node_modules/
+      - ./lib/vscode/remote/web/node_modules/
+      - ./lib/vscode/test/automation/node_modules/
+      - ./lib/vscode/test/integration/browser/node_modules/
+      - ./lib/vscode/test/monaco/node_modules/
+      - ./lib/vscode/test/smoke/node_modules/
+      - ./node_modules/
+      - ./test/node_modules/
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev
 
-  # read-cache:
-  #   image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
-  #   pull: true
-  #   restore: true
-  #   check: yarn.lock
-  #   mount:
-  #     - ./lib/coder-cloud-agent
-  #     - ./lib/vscode/build/lib/watch/node_modules/
-  #     - ./lib/vscode/build/node_modules/
-  #     - ./lib/vscode/extensions/configuration-editing/node_modules/
-  #     - ./lib/vscode/extensions/css-language-features/node_modules/
-  #     - ./lib/vscode/extensions/css-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/debug-auto-launch/node_modules/
-  #     - ./lib/vscode/extensions/debug-server-ready/node_modules/
-  #     - ./lib/vscode/extensions/emmet/node_modules/
-  #     - ./lib/vscode/extensions/extension-editing/node_modules/
-  #     - ./lib/vscode/extensions/git-ui/node_modules/
-  #     - ./lib/vscode/extensions/git/node_modules/
-  #     - ./lib/vscode/extensions/github-authentication/node_modules/
-  #     - ./lib/vscode/extensions/github/node_modules/
-  #     - ./lib/vscode/extensions/grunt/node_modules/
-  #     - ./lib/vscode/extensions/gulp/node_modules/
-  #     - ./lib/vscode/extensions/html-language-features/node_modules/
-  #     - ./lib/vscode/extensions/html-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/image-preview/node_modules/
-  #     - ./lib/vscode/extensions/jake/node_modules/
-  #     - ./lib/vscode/extensions/json-language-features/node_modules/
-  #     - ./lib/vscode/extensions/json-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/markdown-language-features/node_modules/
-  #     - ./lib/vscode/extensions/merge-conflict/node_modules/
-  #     - ./lib/vscode/extensions/microsoft-authentication/node_modules/
-  #     - ./lib/vscode/extensions/node_modules/
-  #     - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
-  #     - ./lib/vscode/extensions/npm/node_modules/
-  #     - ./lib/vscode/extensions/php-language-features/node_modules/
-  #     - ./lib/vscode/extensions/search-result/node_modules/
-  #     - ./lib/vscode/extensions/simple-browser/node_modules/
-  #     - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
-  #     - ./lib/vscode/extensions/typescript-language-features/node_modules/
-  #     - ./lib/vscode/extensions/vscode-api-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
-  #     - ./lib/vscode/node_modules/
-  #     - ./lib/vscode/remote/node_modules/
-  #     - ./lib/vscode/remote/web/node_modules/
-  #     - ./lib/vscode/test/automation/node_modules/
-  #     - ./lib/vscode/test/integration/browser/node_modules/
-  #     - ./lib/vscode/test/monaco/node_modules/
-  #     - ./lib/vscode/test/smoke/node_modules/
-  #     - ./node_modules/
-  #     - ./test/node_modules/
-  #   volumes:
-  #     - /data/cache/:/cache
-  #   when:
-  #     branch:
-  #       - dev
+  build-node:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster
+    dns: 223.5.5.5
+    volumes:
+      - /data/cache/yarn/:/usr/local/share/.cache/yarn
+    commands:
+      - yarn
+      - yarn build
+      - yarn build:vscode
+      - yarn release
+      - yarn release:standalone
+      - yarn test:standalone-release
+      - yarn package
+    when:
+      branch:
+        - dev
 
-  # build-node:
-  #   image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster
-  #   dns: 223.5.5.5
-  #   volumes:
-  #     - /data/cache/yarn/:/usr/local/share/.cache/yarn
-  #   commands:
-  #     - yarn
-  #     - yarn build
-  #     - yarn build:vscode
-  #     - yarn release
-  #     - yarn release:standalone
-  #     - yarn test:standalone-release
-  #     - yarn package
-  #   when:
-  #     branch:
-  #       - dev
+  store-cache:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    rebuild: true
+    check: yarn.lock
+    mount:
+      - ./lib/coder-cloud-agent
+      - ./lib/vscode/build/lib/watch/node_modules/
+      - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/extensions/configuration-editing/node_modules/
+      - ./lib/vscode/extensions/css-language-features/node_modules/
+      - ./lib/vscode/extensions/css-language-features/server/node_modules/
+      - ./lib/vscode/extensions/debug-auto-launch/node_modules/
+      - ./lib/vscode/extensions/debug-server-ready/node_modules/
+      - ./lib/vscode/extensions/emmet/node_modules/
+      - ./lib/vscode/extensions/extension-editing/node_modules/
+      - ./lib/vscode/extensions/git-ui/node_modules/
+      - ./lib/vscode/extensions/git/node_modules/
+      - ./lib/vscode/extensions/github-authentication/node_modules/
+      - ./lib/vscode/extensions/github/node_modules/
+      - ./lib/vscode/extensions/grunt/node_modules/
+      - ./lib/vscode/extensions/gulp/node_modules/
+      - ./lib/vscode/extensions/html-language-features/node_modules/
+      - ./lib/vscode/extensions/html-language-features/server/node_modules/
+      - ./lib/vscode/extensions/image-preview/node_modules/
+      - ./lib/vscode/extensions/jake/node_modules/
+      - ./lib/vscode/extensions/json-language-features/node_modules/
+      - ./lib/vscode/extensions/json-language-features/server/node_modules/
+      - ./lib/vscode/extensions/markdown-language-features/node_modules/
+      - ./lib/vscode/extensions/merge-conflict/node_modules/
+      - ./lib/vscode/extensions/microsoft-authentication/node_modules/
+      - ./lib/vscode/extensions/node_modules/
+      - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
+      - ./lib/vscode/extensions/npm/node_modules/
+      - ./lib/vscode/extensions/php-language-features/node_modules/
+      - ./lib/vscode/extensions/search-result/node_modules/
+      - ./lib/vscode/extensions/simple-browser/node_modules/
+      - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
+      - ./lib/vscode/extensions/typescript-language-features/node_modules/
+      - ./lib/vscode/extensions/vscode-api-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
+      - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
+      - ./lib/vscode/node_modules/
+      - ./lib/vscode/remote/node_modules/
+      - ./lib/vscode/remote/web/node_modules/
+      - ./lib/vscode/test/automation/node_modules/
+      - ./lib/vscode/test/integration/browser/node_modules/
+      - ./lib/vscode/test/monaco/node_modules/
+      - ./lib/vscode/test/smoke/node_modules/
+      - ./node_modules/
+      - ./test/node_modules/
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev
 
-  # store-cache:
-  #   image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
-  #   pull: true
-  #   rebuild: true
-  #   check: yarn.lock
-  #   mount:
-  #     - ./lib/coder-cloud-agent
-  #     - ./lib/vscode/build/lib/watch/node_modules/
-  #     - ./lib/vscode/build/node_modules/
-  #     - ./lib/vscode/extensions/configuration-editing/node_modules/
-  #     - ./lib/vscode/extensions/css-language-features/node_modules/
-  #     - ./lib/vscode/extensions/css-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/debug-auto-launch/node_modules/
-  #     - ./lib/vscode/extensions/debug-server-ready/node_modules/
-  #     - ./lib/vscode/extensions/emmet/node_modules/
-  #     - ./lib/vscode/extensions/extension-editing/node_modules/
-  #     - ./lib/vscode/extensions/git-ui/node_modules/
-  #     - ./lib/vscode/extensions/git/node_modules/
-  #     - ./lib/vscode/extensions/github-authentication/node_modules/
-  #     - ./lib/vscode/extensions/github/node_modules/
-  #     - ./lib/vscode/extensions/grunt/node_modules/
-  #     - ./lib/vscode/extensions/gulp/node_modules/
-  #     - ./lib/vscode/extensions/html-language-features/node_modules/
-  #     - ./lib/vscode/extensions/html-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/image-preview/node_modules/
-  #     - ./lib/vscode/extensions/jake/node_modules/
-  #     - ./lib/vscode/extensions/json-language-features/node_modules/
-  #     - ./lib/vscode/extensions/json-language-features/server/node_modules/
-  #     - ./lib/vscode/extensions/markdown-language-features/node_modules/
-  #     - ./lib/vscode/extensions/merge-conflict/node_modules/
-  #     - ./lib/vscode/extensions/microsoft-authentication/node_modules/
-  #     - ./lib/vscode/extensions/node_modules/
-  #     - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
-  #     - ./lib/vscode/extensions/npm/node_modules/
-  #     - ./lib/vscode/extensions/php-language-features/node_modules/
-  #     - ./lib/vscode/extensions/search-result/node_modules/
-  #     - ./lib/vscode/extensions/simple-browser/node_modules/
-  #     - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
-  #     - ./lib/vscode/extensions/typescript-language-features/node_modules/
-  #     - ./lib/vscode/extensions/vscode-api-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
-  #     - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
-  #     - ./lib/vscode/node_modules/
-  #     - ./lib/vscode/remote/node_modules/
-  #     - ./lib/vscode/remote/web/node_modules/
-  #     - ./lib/vscode/test/automation/node_modules/
-  #     - ./lib/vscode/test/integration/browser/node_modules/
-  #     - ./lib/vscode/test/monaco/node_modules/
-  #     - ./lib/vscode/test/smoke/node_modules/
-  #     - ./node_modules/
-  #     - ./test/node_modules/
-  #   volumes:
-  #     - /data/cache/:/cache
-  #   when:
-  #     branch:
-  #       - dev
-
-  # docker:
-  #   image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
-  #   dns: 223.5.5.5
-  #   pull: true
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock    
-  #   base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode
-  #   dockerfile: .beagle/dockerfile
-  #   repo: wod/awecloud-vscode
-  #   version: "v3.10.0"
-  #   channel: alpha
-  #   args: "TARGETOS=linux,TARGETARCH=amd64"
-  #   registry: registry.cn-qingdao.aliyuncs.com
-  #   secrets: 
-  #     - source: REGISTRY_USER_ALIYUN
-  #       target: REGISTRY_USER
-  #     - source: REGISTRY_PASSWORD_ALIYUN
-  #       target: REGISTRY_PASSWORD
-  #   when:
-  #     branch: 
-  #       - dev
+  docker:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
+    dns: 223.5.5.5
+    pull: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode
+    dockerfile: .beagle/dockerfile
+    repo: wod/awecloud-vscode
+    version: "v3.10.2"
+    channel: alpha
+    args: "TARGETOS=linux,TARGETARCH=amd64"
+    registry: registry.cn-qingdao.aliyuncs.com
+    secrets:
+      - source: REGISTRY_USER_ALIYUN
+        target: REGISTRY_USER
+      - source: REGISTRY_PASSWORD_ALIYUN
+        target: REGISTRY_PASSWORD
+    when:
+      branch:
+        - dev
 
   harbor:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker-tag:1.0
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - master
 
   # build-node-arm64:
@@ -208,21 +206,21 @@ pipeline:
   #   dns: 223.5.5.5
   #   pull: true
   #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock    
+  #     - /var/run/docker.sock:/var/run/docker.sock
   #   base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64
   #   dockerfile: .beagle/dockerfile
   #   repo: wod/awecloud-vscode
-  #   version: "v3.10.0"
+  #   version: "v3.10.2"
   #   channel: alpha-arm64
   #   args: "TARGETOS=linux,TARGETARCH=arm64"
   #   registry: registry.cn-qingdao.aliyuncs.com
-  #   secrets: 
+  #   secrets:
   #     - source: REGISTRY_USER_ALIYUN
   #       target: REGISTRY_USER
   #     - source: REGISTRY_PASSWORD_ALIYUN
   #       target: REGISTRY_PASSWORD
   #   when:
-  #     branch: 
+  #     branch:
   #       - dev
 
   harbor-arm64:
@@ -230,14 +228,14 @@ pipeline:
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-arm64
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-arm64
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - master
