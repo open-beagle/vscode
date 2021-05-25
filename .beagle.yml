@@ -20,8 +20,8 @@ pipeline:
     check: yarn.lock
     mount:
       - ./lib/coder-cloud-agent
-      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/extensions/configuration-editing/node_modules/
       - ./lib/vscode/extensions/css-language-features/node_modules/
       - ./lib/vscode/extensions/css-language-features/server/node_modules/
@@ -74,7 +74,7 @@ pipeline:
         - dev
 
   build-node:
-    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster
     dns: 223.5.5.5
     volumes:
       - /data/cache/yarn/:/usr/local/share/.cache/yarn
@@ -97,8 +97,8 @@ pipeline:
     check: yarn.lock
     mount:
       - ./lib/coder-cloud-agent
-      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/extensions/configuration-editing/node_modules/
       - ./lib/vscode/extensions/css-language-features/node_modules/
       - ./lib/vscode/extensions/css-language-features/server/node_modules/
