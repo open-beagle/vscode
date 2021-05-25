@@ -29,7 +29,6 @@ pipeline:
       - ./lib/vscode/extensions/debug-server-ready/node_modules/
       - ./lib/vscode/extensions/emmet/node_modules/
       - ./lib/vscode/extensions/extension-editing/node_modules/
-      - ./lib/vscode/extensions/git-ui/node_modules/
       - ./lib/vscode/extensions/git/node_modules/
       - ./lib/vscode/extensions/github-authentication/node_modules/
       - ./lib/vscode/extensions/github/node_modules/
@@ -65,6 +64,7 @@ pipeline:
       - ./lib/vscode/test/monaco/node_modules/
       - ./lib/vscode/test/smoke/node_modules/
       - ./node_modules/
+      - ./release-standalone/node_modules/
       - ./test/node_modules/
     volumes:
       - /data/cache/:/cache
@@ -105,7 +105,6 @@ pipeline:
       - ./lib/vscode/extensions/debug-server-ready/node_modules/
       - ./lib/vscode/extensions/emmet/node_modules/
       - ./lib/vscode/extensions/extension-editing/node_modules/
-      - ./lib/vscode/extensions/git-ui/node_modules/
       - ./lib/vscode/extensions/git/node_modules/
       - ./lib/vscode/extensions/github-authentication/node_modules/
       - ./lib/vscode/extensions/github/node_modules/
@@ -141,6 +140,7 @@ pipeline:
       - ./lib/vscode/test/monaco/node_modules/
       - ./lib/vscode/test/smoke/node_modules/
       - ./node_modules/
+      - ./release-standalone/node_modules/
       - ./test/node_modules/
     volumes:
       - /data/cache/:/cache

@@ -5,6 +5,16 @@ main() {
   cd "$(dirname "${0}")/../.."
   source ./ci/lib.sh
 
+  if [[ -d "$RELEASE_PATH-standalone/node_modules" ]]; then
+    mkdir -p /tmp/cloud/vscode/release-standalone
+    mv "$RELEASE_PATH-standalone/node_modules" /tmp/cloud/vscode/release-standalone/
+  fi
+
+  if [[ -d "$RELEASE_PATH-standalone/lib/vscode/node_modules" ]]; then
+    mkdir -p /tmp/cloud/vscode/release-standalone/lib/vscode
+    mv "$RELEASE_PATH-standalone/lib/vscode/node_modules" /tmp/cloud/vscode/release-standalone/lib/vscode/
+  fi
+
   rsync "$RELEASE_PATH/" "$RELEASE_PATH-standalone"
   RELEASE_PATH+=-standalone
 
@@ -20,6 +30,14 @@ main() {
 
   ln -s "./bin/code-server" "$RELEASE_PATH/code-server"
   ln -s "./lib/node" "$RELEASE_PATH/node"
+
+  if [[ -d "/tmp/cloud/vscode/release-standalone/node_modules" ]]; then
+    mv /tmp/cloud/vscode/release-standalone/node_modules "$RELEASE_PATH/"
+  fi
+
+  if [[ -d "/tmp/cloud/vscode/release-standalone/lib/vscode/node_modules" ]]; then
+    mv /tmp/cloud/vscode/release-standalone/lib/vscode/node_modules "$RELEASE_PATH/lib/vscode/"
+  fi
 
   cd "$RELEASE_PATH"
   yarn --production --frozen-lockfile
