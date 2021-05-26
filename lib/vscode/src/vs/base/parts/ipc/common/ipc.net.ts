@@ -252,7 +252,7 @@ class ProtocolReader extends Disposable {
 		return this._incomingData.read(this._incomingData.byteLength);
 	}
 
-	public dispose(): void {
+	public override dispose(): void {
 		this._isDisposed = true;
 		super.dispose();
 	}
@@ -412,7 +412,7 @@ export class Client<TContext = string> extends IPCClient<TContext> {
 		super(protocol, id, ipcLogger);
 	}
 
-	dispose(): void {
+	override dispose(): void {
 		super.dispose();
 		const socket = this.protocol.getSocket();
 		this.protocol.sendDisconnect();
@@ -741,6 +741,11 @@ export class PersistentProtocol implements IMessagePassingProtocol {
 			this._incomingKeepAliveTimeout = null;
 			this._recvKeepAliveCheck();
 		}, Math.max(ProtocolConstants.KeepAliveTimeoutTime - timeSinceLastIncomingMsg, 0) + 5);
+	}
+
+	// NOTE@coder: Set the socket without initiating a reconnect.
+	public setSocket(socket: ISocket): void {
+		this._socket = socket;
 	}
 
 	public getSocket(): ISocket {

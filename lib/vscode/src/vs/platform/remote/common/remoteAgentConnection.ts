@@ -17,7 +17,6 @@ import { ILogService } from 'vs/platform/log/common/log';
 import { IIPCLogger } from 'vs/base/parts/ipc/common/ipc';
 import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
 
-const INITIAL_CONNECT_TIMEOUT = 120 * 1000 /* 120s */;
 const RECONNECT_TIMEOUT = 30 * 1000 /* 30s */;
 
 export const enum ConnectionType {
@@ -230,7 +229,9 @@ async function connectToRemoteExtensionHostAgent(options: ISimpleConnectionOptio
 
 	let socket: ISocket;
 	try {
-		socket = await createSocket(options.logService, options.socketFactory, options.host, options.port, `reconnectionToken=${options.reconnectionToken}&reconnection=${options.reconnectionProtocol ? 'true' : 'false'}`, timeoutCancellationToken);
+		// NOTE@coder: Add connection type to the socket. This is so they can be
+		// distinguished by the backend.
+		socket = await createSocket(options.logService, options.socketFactory, options.host, options.port, `type=${connectionTypeToString(connectionType)}&reconnectionToken=${options.reconnectionToken}&reconnection=${options.reconnectionProtocol ? 'true' : 'false'}`, timeoutCancellationToken);
 	} catch (error) {
 		options.logService.error(`${logPrefix} socketFactory.connect() failed or timed out. Error:`);
 		options.logService.error(error);
@@ -404,7 +405,7 @@ export async function connectRemoteAgentManagement(options: IConnectionOptions, 
 	try {
 		const reconnectionToken = generateUuid();
 		const simpleOptions = await resolveConnectionOptions(options, reconnectionToken, null);
-		const { protocol } = await doConnectRemoteAgentManagement(simpleOptions, createTimeoutCancellation(INITIAL_CONNECT_TIMEOUT));
+		const { protocol } = await doConnectRemoteAgentManagement(simpleOptions, CancellationToken.None);
 		return new ManagementPersistentConnection(options, remoteAuthority, clientId, reconnectionToken, protocol);
 	} catch (err) {
 		options.logService.error(`[remote-connection] An error occurred in the very first connect attempt, it will be treated as a permanent error! Error:`);
@@ -418,7 +419,7 @@ export async function connectRemoteAgentExtensionHost(options: IConnectionOption
 	try {
 		const reconnectionToken = generateUuid();
 		const simpleOptions = await resolveConnectionOptions(options, reconnectionToken, null);
-		const { protocol, debugPort } = await doConnectRemoteAgentExtensionHost(simpleOptions, startArguments, createTimeoutCancellation(INITIAL_CONNECT_TIMEOUT));
+		const { protocol, debugPort } = await doConnectRemoteAgentExtensionHost(simpleOptions, startArguments, CancellationToken.None);
 		return new ExtensionHostPersistentConnection(options, startArguments, reconnectionToken, protocol, debugPort);
 	} catch (err) {
 		options.logService.error(`[remote-connection] An error occurred in the very first connect attempt, it will be treated as a permanent error! Error:`);
@@ -430,7 +431,7 @@ export async function connectRemoteAgentExtensionHost(options: IConnectionOption
 
 export async function connectRemoteAgentTunnel(options: IConnectionOptions, tunnelRemotePort: number): Promise<PersistentProtocol> {
 	const simpleOptions = await resolveConnectionOptions(options, generateUuid(), null);
-	const protocol = await doConnectRemoteAgentTunnel(simpleOptions, { port: tunnelRemotePort }, createTimeoutCancellation(INITIAL_CONNECT_TIMEOUT));
+	const protocol = await doConnectRemoteAgentTunnel(simpleOptions, { port: tunnelRemotePort }, CancellationToken.None);
 	return protocol;
 }
 

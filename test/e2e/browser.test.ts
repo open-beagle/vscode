@@ -1,18 +1,16 @@
-/// <reference types="jest-playwright-preset" />
+import { test, expect } from "@playwright/test"
+import { CodeServer } from "./models/CodeServer"
 
-// This test is for nothing more than to make sure
-// tests are running in multiple browsers
-describe("Browser gutcheck", () => {
-  beforeEach(async () => {
-    await jestPlaywright.resetBrowser({
-      logger: {
-        isEnabled: (name) => name === "browser",
-        log: (name, severity, message, args) => console.log(`${name} ${message}`),
-      },
-    })
+// This is a "gut-check" test to make sure playwright is working as expected
+test.describe("browser", () => {
+  let codeServer: CodeServer
+
+  test.beforeEach(async ({ page }) => {
+    codeServer = new CodeServer(page)
+    await codeServer.navigate()
   })
 
-  test("should display correct browser based on userAgent", async () => {
+  test("browser should display correct userAgent", async ({ page, browserName }) => {
     const displayNames = {
       chromium: "Chrome",
       firefox: "Firefox",
@@ -20,16 +18,6 @@ describe("Browser gutcheck", () => {
     }
     const userAgent = await page.evaluate("navigator.userAgent")
 
-    if (browserName === "chromium") {
-      expect(userAgent).toContain(displayNames[browserName])
-    }
-
-    if (browserName === "firefox") {
-      expect(userAgent).toContain(displayNames[browserName])
-    }
-
-    if (browserName === "webkit") {
-      expect(userAgent).toContain(displayNames[browserName])
-    }
+    expect(userAgent).toContain(displayNames[browserName])
   })
 })

@@ -24,7 +24,6 @@ import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
 import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
-import product from 'vs/platform/product/common/product';
 import { Extensions as QuickAccessExtensions, IQuickAccessRegistry } from 'vs/platform/quickinput/common/quickAccess';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { Registry } from 'vs/platform/registry/common/platform';
@@ -609,7 +608,7 @@ class ShowAllSymbolsAction extends Action {
 		super(actionId, actionLabel);
 	}
 
-	async run(): Promise<void> {
+	override async run(): Promise<void> {
 		this.quickInputService.quickAccess.show(ShowAllSymbolsAction.ALL_SYMBOLS_PREFIX);
 	}
 }
@@ -853,8 +852,8 @@ configurationRegistry.registerConfiguration({
 			markdownDescription: nls.localize('search.mode', "Controls where new `Search: Find in Files` and `Find in Folder` operations occur: either in the sidebar's search view, or in a search editor"),
 			enumDescriptions: [
 				nls.localize('search.mode.view', "Search in the search view, either in the panel or sidebar."),
-				nls.localize('search.mode.reuseEditor', "Search in an existing search editor if present, otherwise in a new search editor"),
-				nls.localize('search.mode.newEditor', "Search in a new search editor"),
+				nls.localize('search.mode.reuseEditor', "Search in an existing search editor if present, otherwise in a new search editor."),
+				nls.localize('search.mode.newEditor', "Search in a new search editor."),
 			]
 		},
 		'search.useRipgrep': {
@@ -921,7 +920,7 @@ configurationRegistry.registerConfiguration({
 			enum: ['sidebar', 'panel'],
 			default: 'sidebar',
 			description: nls.localize('search.location', "Controls whether the search will be shown as a view in the sidebar or as a panel in the panel area for more horizontal space."),
-			deprecationMessage: nls.localize('search.location.deprecationMessage', "This setting is deprecated. Please use drag and drop instead by dragging the search icon.")
+			deprecationMessage: nls.localize('search.location.deprecationMessage', "This setting is deprecated. You can drag the search icon to a new location instead.")
 		},
 		'search.collapseResults': {
 			type: 'string',
@@ -994,7 +993,7 @@ configurationRegistry.registerConfiguration({
 		'search.searchEditor.reusePriorSearchConfiguration': {
 			type: 'boolean',
 			default: false,
-			markdownDescription: nls.localize({ key: 'search.searchEditor.reusePriorSearchConfiguration', comment: ['"Search Editor" is a type of editor that can display search results. "includes, excludes, and flags" refers to the "files to include" and "files to exclude" input boxes, and the flags that control whether a query is case-sensitive or a regex.'] }, "When enabled, new Search Editors will reuse the includes, excludes, and flags of the previously opened Search Editor")
+			markdownDescription: nls.localize({ key: 'search.searchEditor.reusePriorSearchConfiguration', comment: ['"Search Editor" is a type of editor that can display search results. "includes, excludes, and flags" refers to the "files to include" and "files to exclude" input boxes, and the flags that control whether a query is case-sensitive or a regex.'] }, "When enabled, new Search Editors will reuse the includes, excludes, and flags of the previously opened Search Editor.")
 		},
 		'search.searchEditor.defaultNumberOfContextLines': {
 			type: ['number', 'null'],
@@ -1014,11 +1013,6 @@ configurationRegistry.registerConfiguration({
 				nls.localize('searchSortOrder.countAscending', "Results are sorted by count per file, in ascending order.")
 			],
 			'description': nls.localize('search.sortOrder', "Controls sorting order of search results.")
-		},
-		'search.experimental.searchInOpenEditors': {
-			type: 'boolean',
-			default: product.quality !== 'stable',
-			markdownDescription: nls.localize('search.experimental.searchInOpenEditors', "Experimental. When enabled, an option is provided to make workspace search only search files that have been opened. **Requires restart to take effect.**")
 		}
 	}
 });

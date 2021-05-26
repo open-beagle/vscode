@@ -293,14 +293,20 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
 
 	public focus(): void {
 		if (this.selectElement) {
+			this.selectElement.tabIndex = 0;
 			this.selectElement.focus();
 		}
 	}
 
 	public blur(): void {
 		if (this.selectElement) {
+			this.selectElement.tabIndex = -1;
 			this.selectElement.blur();
 		}
+	}
+
+	public setFocusable(focusable: boolean): void {
+		this.selectElement.tabIndex = focusable ? 0 : -1;
 	}
 
 	public render(container: HTMLElement): void {
@@ -1040,7 +1046,7 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
 		}
 	}
 
-	public dispose(): void {
+	public override dispose(): void {
 		this.hideSelectDropDown(false);
 		super.dispose();
 	}

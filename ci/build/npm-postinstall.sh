@@ -1,6 +1,24 @@
 #!/usr/bin/env sh
 set -eu
 
+# Copied from arch() in ci/lib.sh.
+detect_arch() {
+  case "$(uname -m)" in
+  aarch64)
+    echo arm64
+    ;;
+  x86_64 | amd64)
+    echo amd64
+    ;;
+  *)
+    # This will cause the download to fail, but is intentional
+    uname -m
+    ;;
+  esac
+}
+
+ARCH="${NPM_CONFIG_ARCH:-$(detect_arch)}"
+
 main() {
   # Grabs the major version of node from $npm_config_user_agent which looks like
   # yarn/1.21.1 npm/? node/v14.2.0 darwin x64
@@ -38,18 +56,21 @@ main() {
   fi
 }
 
+# This is a copy of symlink_asar in ../lib.sh. Look there for details.
+symlink_asar() {
+  rm -f node_modules.asar
+  if [ "${WINDIR-}" ]; then
+    mklink /J node_modules.asar node_modules
+  else
+    ln -s node_modules node_modules.asar
+  fi
+}
+
 vscode_yarn() {
   cd lib/vscode
   yarn --production --frozen-lockfile
 
-  # This is a copy of symlink_asar in ../lib.sh. Look there for details.
-  if [ ! -e node_modules.asar ]; then
-    if [ "${WINDIR-}" ]; then
-      mklink /J node_modules.asar node_modules
-    else
-      ln -s node_modules node_modules.asar
-    fi
-  fi
+  symlink_asar
 
   cd extensions
   yarn --production --frozen-lockfile

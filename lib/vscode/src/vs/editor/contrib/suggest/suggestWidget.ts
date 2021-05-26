@@ -223,7 +223,6 @@ export class SuggestWidget implements IDisposable {
 			accessibilityProvider: {
 				getRole: () => 'option',
 				getAriaLabel: (item: CompletionItem) => {
-					const textLabel = typeof item.completion.label === 'string' ? item.completion.label : item.completion.label.name;
 					if (item.isResolved && this._isDetailsVisible()) {
 						const { documentation, detail } = item.completion;
 						const docs = strings.format(
@@ -231,9 +230,9 @@ export class SuggestWidget implements IDisposable {
 							detail || '',
 							documentation ? (typeof documentation === 'string' ? documentation : documentation.value) : '');
 
-						return nls.localize('ariaCurrenttSuggestionReadDetails', "{0}, docs: {1}", textLabel, docs);
+						return nls.localize('ariaCurrenttSuggestionReadDetails', "{0}, docs: {1}", item.textLabel, docs);
 					} else {
-						return textLabel;
+						return item.textLabel;
 					}
 				},
 				getWidgetAriaLabel: () => nls.localize('suggest', "Suggest"),
@@ -441,6 +440,7 @@ export class SuggestWidget implements IDisposable {
 				this._contentWidget.hide();
 				this._ctxSuggestWidgetVisible.reset();
 				this._ctxSuggestWidgetMultipleSuggestions.reset();
+				this._showTimeout.cancel();
 				this.element.domNode.classList.remove('visible');
 				this._list.splice(0, this._list.length);
 				this._focusedItem = undefined;
@@ -670,7 +670,7 @@ export class SuggestWidget implements IDisposable {
 			this._details.hide();
 			this.element.domNode.classList.remove('shows-details');
 
-		} else if (canExpandCompletionItem(this._list.getFocusedElements()[0]) && (this._state === State.Open || this._state === State.Details || this._state === State.Frozen)) {
+		} else if ((canExpandCompletionItem(this._list.getFocusedElements()[0]) || this._explainMode) && (this._state === State.Open || this._state === State.Details || this._state === State.Frozen)) {
 			// show details widget (iff possible)
 			this._ctxSuggestWidgetDetailsVisible.set(true);
 			this._setDetailsVisible(true);
@@ -691,9 +691,13 @@ export class SuggestWidget implements IDisposable {
 	}
 
 	toggleExplainMode(): void {
-		if (this._list.getFocusedElements()[0] && this._isDetailsVisible()) {
+		if (this._list.getFocusedElements()[0]) {
 			this._explainMode = !this._explainMode;
-			this.showDetails(false);
+			if (!this._isDetailsVisible()) {
+				this.toggleDetails();
+			} else {
+				this.showDetails(false);
+			}
 		}
 	}
 
@@ -705,6 +709,7 @@ export class SuggestWidget implements IDisposable {
 		this._loadingTimeout?.dispose();
 		this._setState(State.Hidden);
 		this._onDidHide.fire(this);
+		this.element.clearSashHoverState();
 
 		// ensure that a reasonable widget height is persisted so that
 		// accidential "resize-to-single-items" cases aren't happening

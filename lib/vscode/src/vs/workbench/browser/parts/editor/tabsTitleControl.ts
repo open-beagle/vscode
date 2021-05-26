@@ -6,7 +6,8 @@
 import 'vs/css!./media/tabstitlecontrol';
 import { isMacintosh, isWindows } from 'vs/base/common/platform';
 import { shorten } from 'vs/base/common/labels';
-import { EditorResourceAccessor, GroupIdentifier, IEditorInput, Verbosity, EditorCommandsContextActionRunner, IEditorPartOptions, SideBySideEditor, computeEditorAriaLabel } from 'vs/workbench/common/editor';
+import { EditorResourceAccessor, GroupIdentifier, IEditorInput, Verbosity, EditorCommandsContextActionRunner, IEditorPartOptions, SideBySideEditor } from 'vs/workbench/common/editor';
+import { computeEditorAriaLabel } from 'vs/workbench/browser/editor';
 import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
 import { EventType as TouchEventType, GestureEvent, Gesture } from 'vs/base/browser/touch';
 import { KeyCode } from 'vs/base/common/keyCodes';
@@ -166,7 +167,7 @@ export class TabsTitleControl extends TitleControl {
 		const breadcrumbsContainer = document.createElement('div');
 		breadcrumbsContainer.classList.add('tabs-breadcrumbs');
 		this.titleContainer.appendChild(breadcrumbsContainer);
-		this.createBreadcrumbsControl(breadcrumbsContainer, { showFileIcons: true, showSymbolIcons: true, showDecorationColors: false, breadcrumbsBackground: breadcrumbsBackground });
+		this.createBreadcrumbsControl(breadcrumbsContainer, { showFileIcons: true, showSymbolIcons: true, showDecorationColors: false, showPlaceholder: true, breadcrumbsBackground: breadcrumbsBackground });
 	}
 
 	private createTabsScrollbar(scrollable: HTMLElement): ScrollableElement {
@@ -378,7 +379,7 @@ export class TabsTitleControl extends TitleControl {
 		this.layout(this.dimensions);
 	}
 
-	protected updateEditorActionsToolbar(): void {
+	protected override updateEditorActionsToolbar(): void {
 		super.updateEditorActionsToolbar();
 
 		// Changing the actions in the toolbar can have an impact on the size of the
@@ -570,7 +571,7 @@ export class TabsTitleControl extends TitleControl {
 		}
 	}
 
-	updateStyles(): void {
+	override updateStyles(): void {
 		this.redraw();
 	}
 
@@ -1482,6 +1483,48 @@ export class TabsTitleControl extends TitleControl {
 			});
 		}
 
+		// Update the `last-in-row` class on tabs when wrapping
+		// is enabled (it doesn't do any harm otherwise). This
+		// class controls additional properties of tab when it is
+		// the last tab in a row
+		if (tabsWrapMultiLine) {
+
+			// Using a map here to change classes after the for loop is
+			// crucial for performance because changing the class on a
+			// tab can result in layouts of the rendering engine.
+			const tabs = new Map<HTMLElement, boolean /* last in row */>();
+
+			let currentTabsPosY: number | undefined = undefined;
+			let lastTab: HTMLElement | undefined = undefined;
+			for (const child of tabsContainer.children) {
+				const tab = child as HTMLElement;
+				const tabPosY = tab.offsetTop;
+
+				// Marks a new or the first row of tabs
+				if (tabPosY !== currentTabsPosY) {
+					currentTabsPosY = tabPosY;
+					if (lastTab) {
+						tabs.set(lastTab, true); // previous tab must be last in row then
+					}
+				}
+
+				// Always remember last tab and ensure the
+				// last-in-row class is not present until
+				// we know the tab is last
+				lastTab = tab;
+				tabs.set(tab, false);
+			}
+
+			// Last tab overally is always last-in-row
+			if (lastTab) {
+				tabs.set(lastTab, true);
+			}
+
+			for (const [tab, lastInRow] of tabs) {
+				tab.classList.toggle('last-in-row', lastInRow);
+			}
+		}
+
 		return tabsWrapMultiLine;
 	}
 
@@ -1729,7 +1772,7 @@ export class TabsTitleControl extends TitleControl {
 		return !isCopy || source === this.group.id;
 	}
 
-	dispose(): void {
+	override dispose(): void {
 		super.dispose();
 
 		this.tabDisposables = dispose(this.tabDisposables);

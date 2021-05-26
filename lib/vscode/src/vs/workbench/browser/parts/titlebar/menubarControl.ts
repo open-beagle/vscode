@@ -9,7 +9,7 @@ import { registerThemingParticipant, IThemeService } from 'vs/platform/theme/com
 import { MenuBarVisibility, getTitleBarStyle, IWindowOpenable, getMenuBarVisibility } from 'vs/platform/windows/common/windows';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IAction, Action, SubmenuAction, Separator } from 'vs/base/common/actions';
-import { addDisposableListener, Dimension, EventType, getCookieValue } from 'vs/base/browser/dom';
+import { addDisposableListener, Dimension, EventType } from 'vs/base/browser/dom';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { isMacintosh, isWeb, isIOS, isNative } from 'vs/base/common/platform';
 import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
@@ -38,8 +38,8 @@ import { KeyCode } from 'vs/base/common/keyCodes';
 import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
 import { IsWebContext } from 'vs/platform/contextkey/common/contextkeys';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { ILogService } from 'vs/platform/log/common/log';
-import { Cookie } from 'vs/server/common/cookie';
+
+export type IOpenRecentAction = IAction & { uri: URI, remoteAuthority?: string };
 
 export abstract class MenubarControl extends Disposable {
 
@@ -160,7 +160,7 @@ export abstract class MenubarControl extends Disposable {
 		this.updateMenubar();
 	}
 
-	protected getOpenRecentActions(): (Separator | IAction & { uri: URI })[] {
+	protected getOpenRecentActions(): (Separator | IOpenRecentAction)[] {
 		if (!this.recentlyOpened) {
 			return [];
 		}
@@ -226,12 +226,13 @@ export abstract class MenubarControl extends Disposable {
 		}
 	}
 
-	private createOpenRecentMenuAction(recent: IRecent): IAction & { uri: URI } {
+	private createOpenRecentMenuAction(recent: IRecent): IOpenRecentAction {
 
 		let label: string;
 		let uri: URI;
 		let commandId: string;
 		let openable: IWindowOpenable;
+		const remoteAuthority = recent.remoteAuthority;
 
 		if (isRecentFolder(recent)) {
 			uri = recent.folderUri;
@@ -250,15 +251,17 @@ export abstract class MenubarControl extends Disposable {
 			openable = { fileUri: uri };
 		}
 
-		const ret: IAction = new Action(commandId, unmnemonicLabel(label), undefined, undefined, (event) => {
-			const openInNewWindow = event && ((!isMacintosh && (event.ctrlKey || event.shiftKey)) || (isMacintosh && (event.metaKey || event.altKey)));
+		const ret: IAction = new Action(commandId, unmnemonicLabel(label), undefined, undefined, event => {
+			const browserEvent = event as KeyboardEvent;
+			const openInNewWindow = event && ((!isMacintosh && (browserEvent.ctrlKey || browserEvent.shiftKey)) || (isMacintosh && (browserEvent.metaKey || browserEvent.altKey)));
 
 			return this.hostService.openWindow([openable], {
-				forceNewWindow: openInNewWindow
+				forceNewWindow: !!openInNewWindow,
+				remoteAuthority
 			});
 		});
 
-		return Object.assign(ret, { uri });
+		return Object.assign(ret, { uri, remoteAuthority });
 	}
 
 	private notifyUserOfCustomMenubarAccessibility(): void {
@@ -309,13 +312,12 @@ export class CustomMenubarControl extends MenubarControl {
 		@IStorageService storageService: IStorageService,
 		@INotificationService notificationService: INotificationService,
 		@IPreferencesService preferencesService: IPreferencesService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IAccessibilityService accessibilityService: IAccessibilityService,
 		@IThemeService private readonly themeService: IThemeService,
 		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IHostService protected readonly hostService: IHostService,
-		@ICommandService commandService: ICommandService,
-		@ILogService private readonly logService: ILogService
+		@IHostService hostService: IHostService,
+		@ICommandService commandService: ICommandService
 	) {
 		super(menuService, workspacesService, contextKeyService, keybindingService, configurationService, labelService, updateService, storageService, notificationService, preferencesService, environmentService, accessibilityService, hostService, commandService);
 
@@ -415,7 +417,6 @@ export class CustomMenubarControl extends MenubarControl {
 					.monaco-workbench .menubar > .menubar-menu-button.open,
 					.monaco-workbench .menubar > .menubar-menu-button:focus,
 					.monaco-workbench .menubar > .menubar-menu-button:hover {
-						outline-offset: -1px;
 						outline-color: ${menubarSelectedBorderColor};
 					}
 				`);
@@ -463,7 +464,7 @@ export class CustomMenubarControl extends MenubarControl {
 
 			case StateType.Idle:
 				return new Action('update.check', localize({ key: 'checkForUpdates', comment: ['&& denotes a mnemonic'] }, "Check for &&Updates..."), undefined, true, () =>
-					this.updateService.checkForUpdates(this.environmentService.sessionId));
+					this.updateService.checkForUpdates(true));
 
 			case StateType.CheckingForUpdates:
 				return new Action('update.checking', localize('checkingForUpdates', "Checking for Updates..."), undefined, false);
@@ -594,6 +595,7 @@ export class CustomMenubarControl extends MenubarControl {
 		const updateActions = (menu: IMenu, target: IAction[], topLevelTitle: string) => {
 			target.splice(0);
 			let groups = menu.getActions();
+
 			for (let group of groups) {
 				const [, actions] = group;
 
@@ -622,7 +624,10 @@ export class CustomMenubarControl extends MenubarControl {
 
 						const submenuActions: SubmenuAction[] = [];
 						updateActions(submenu, submenuActions, topLevelTitle);
-						target.push(new SubmenuAction(action.id, mnemonicMenuLabel(title), submenuActions));
+
+						if (submenuActions.length > 0) {
+							target.push(new SubmenuAction(action.id, mnemonicMenuLabel(title), submenuActions));
+						}
 					} else {
 						const newAction = new Action(action.id, mnemonicMenuLabel(title), action.class, action.enabled, () => this.commandService.executeCommand(action.id));
 						newAction.tooltip = action.tooltip;
@@ -714,28 +719,6 @@ export class CustomMenubarControl extends MenubarControl {
 			webNavigationActions.pop();
 		}
 
-		webNavigationActions.push(new Action('logout', localize('logout', "Log out"), undefined, true,
-		async (event?: MouseEvent) => {
-			const COOKIE_KEY = Cookie.Key;
-			const loginCookie = getCookieValue(COOKIE_KEY);
-
-			this.logService.info('Logging out of code-server');
-
-			if(loginCookie) {
-				this.logService.info(`Removing cookie under ${COOKIE_KEY}`);
-
-				if (document && document.cookie) {
-					// We delete the cookie by setting the expiration to a date/time in the past
-					document.cookie = COOKIE_KEY +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-					window.location.href = '/login';
-				} else {
-					this.logService.warn('Could not delete cookie because document and/or document.cookie is undefined');
-				}
-			} else {
-				this.logService.warn('Could not log out because we could not find cookie');
-			}
-		}));
-
 		return webNavigationActions;
 	}
 
@@ -757,7 +740,7 @@ export class CustomMenubarControl extends MenubarControl {
 		};
 	}
 
-	protected onDidChangeWindowFocus(hasFocus: boolean): void {
+	protected override onDidChangeWindowFocus(hasFocus: boolean): void {
 		if (!this.visible) {
 			return;
 		}
@@ -776,7 +759,7 @@ export class CustomMenubarControl extends MenubarControl {
 		}
 	}
 
-	protected onUpdateStateChange(): void {
+	protected override onUpdateStateChange(): void {
 		if (!this.visible) {
 			return;
 		}
@@ -784,7 +767,7 @@ export class CustomMenubarControl extends MenubarControl {
 		super.onUpdateStateChange();
 	}
 
-	protected onDidChangeRecentlyOpened(): void {
+	protected override onDidChangeRecentlyOpened(): void {
 		if (!this.visible) {
 			return;
 		}
@@ -792,7 +775,7 @@ export class CustomMenubarControl extends MenubarControl {
 		super.onDidChangeRecentlyOpened();
 	}
 
-	protected onUpdateKeybindings(): void {
+	protected override onUpdateKeybindings(): void {
 		if (!this.visible) {
 			return;
 		}
@@ -800,7 +783,7 @@ export class CustomMenubarControl extends MenubarControl {
 		super.onUpdateKeybindings();
 	}
 
-	protected registerListeners(): void {
+	protected override registerListeners(): void {
 		super.registerListeners();
 
 		this._register(addDisposableListener(window, EventType.RESIZE, () => {

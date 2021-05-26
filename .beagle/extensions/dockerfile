@@ -10,9 +10,12 @@ ENV CHECK_FILE=.local/share/code-server/languagepacks.json
 
 COPY ./.local/share/code-server/ /data/input/.local/share/code-server/
 
-COPY ./go1.16.3/ /data/input/go1.16.3/
-COPY ./node-v14.16.1/ /data/input/node-v14.16.1/
-COPY ./yarn-v1.22.10/ /data/input/yarn-v1.22.10/
+ARG GOVERSION
+ARG NODEVERSION
+ARG YARNVERSION
+COPY ./go$GOVERSION/ /data/input/go$GOVERSION/
+COPY ./node-$NODEVERSION/ /data/input/node-$NODEVERSION/
+COPY ./yarn-$YARNVERSION/ /data/input/yarn-$YARNVERSION/
 
 COPY ./go/bin/ /data/input/go/bin/
 

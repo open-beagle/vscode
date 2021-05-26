@@ -5,7 +5,6 @@ workspace:
   path: src/gitlab.wodcloud.com/cloud/vscode
 
 clone:
-
   git:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-git:1.0
     dns: 223.5.5.5
@@ -14,16 +13,16 @@ clone:
         - dev
 
 pipeline:
-
   read-cache:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
     pull: true
     restore: true
     check: yarn.lock
+    suffix: amd64
     mount:
       - ./lib/coder-cloud-agent
-      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/extensions/configuration-editing/node_modules/
       - ./lib/vscode/extensions/css-language-features/node_modules/
       - ./lib/vscode/extensions/css-language-features/server/node_modules/
@@ -31,7 +30,6 @@ pipeline:
       - ./lib/vscode/extensions/debug-server-ready/node_modules/
       - ./lib/vscode/extensions/emmet/node_modules/
       - ./lib/vscode/extensions/extension-editing/node_modules/
-      - ./lib/vscode/extensions/git-ui/node_modules/
       - ./lib/vscode/extensions/git/node_modules/
       - ./lib/vscode/extensions/github-authentication/node_modules/
       - ./lib/vscode/extensions/github/node_modules/
@@ -67,6 +65,8 @@ pipeline:
       - ./lib/vscode/test/monaco/node_modules/
       - ./lib/vscode/test/smoke/node_modules/
       - ./node_modules/
+      - ./release-standalone/node_modules/
+      - ./release-standalone/lib/vscode/node_modules/
       - ./test/node_modules/
     volumes:
       - /data/cache/:/cache
@@ -75,7 +75,7 @@ pipeline:
         - dev
 
   build-node:
-    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster
     dns: 223.5.5.5
     volumes:
       - /data/cache/yarn/:/usr/local/share/.cache/yarn
@@ -96,10 +96,11 @@ pipeline:
     pull: true
     rebuild: true
     check: yarn.lock
+    suffix: amd64
     mount:
       - ./lib/coder-cloud-agent
-      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/build/node_modules/
+      - ./lib/vscode/build/lib/watch/node_modules/
       - ./lib/vscode/extensions/configuration-editing/node_modules/
       - ./lib/vscode/extensions/css-language-features/node_modules/
       - ./lib/vscode/extensions/css-language-features/server/node_modules/
@@ -107,7 +108,6 @@ pipeline:
       - ./lib/vscode/extensions/debug-server-ready/node_modules/
       - ./lib/vscode/extensions/emmet/node_modules/
       - ./lib/vscode/extensions/extension-editing/node_modules/
-      - ./lib/vscode/extensions/git-ui/node_modules/
       - ./lib/vscode/extensions/git/node_modules/
       - ./lib/vscode/extensions/github-authentication/node_modules/
       - ./lib/vscode/extensions/github/node_modules/
@@ -143,6 +143,8 @@ pipeline:
       - ./lib/vscode/test/monaco/node_modules/
       - ./lib/vscode/test/smoke/node_modules/
       - ./node_modules/
+      - ./release-standalone/node_modules/
+      - ./release-standalone/lib/vscode/node_modules/
       - ./test/node_modules/
     volumes:
       - /data/cache/:/cache
@@ -155,21 +157,21 @@ pipeline:
     dns: 223.5.5.5
     pull: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock    
+      - /var/run/docker.sock:/var/run/docker.sock
     base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode
     dockerfile: .beagle/dockerfile
     repo: wod/awecloud-vscode
-    version: "v3.9.3"
+    version: "v3.10.2"
     channel: alpha
     args: "TARGETOS=linux,TARGETARCH=amd64"
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - dev
 
   harbor:
@@ -177,28 +179,70 @@ pipeline:
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - master
 
-  build-node-arm64:
-    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster-arm64
+  clean-node-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster
     dns: 223.5.5.5
     volumes:
       - /data/cache/yarn/:/usr/local/share/.cache/yarn
     commands:
-      - rm -rf release-standalone release-gcp release-packages
+      - rm -rf release-standalone release-gcp release-packages test/node_modules
+    when:
+      branch:
+        - dev
+
+  read-cache-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    restore: true
+    check: yarn.lock
+    suffix: arm64
+    mount:
+      - ./release-standalone/node_modules/
+      - ./release-standalone/lib/vscode/node_modules/
+      - ./test/node_modules/
+    volumes:
+      - /data/cache/:/cache
+    when:
+      branch:
+        - dev
+
+  build-node-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster-arm64
+    dns: 223.5.5.5
+    volumes:
+      - /data/cache/yarn-arm64/:/usr/local/share/.cache/yarn
+    commands:
       - yarn release:standalone
       - yarn test:standalone-release
       - yarn package
+    when:
+      branch:
+        - dev
+
+  store-cache-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
+    pull: true
+    rebuild: true
+    check: yarn.lock
+    suffix: arm64
+    mount:
+      - ./release-standalone/node_modules/
+      - ./release-standalone/lib/vscode/node_modules/
+      - ./test/node_modules/
+    volumes:
+      - /data/cache/:/cache
     when:
       branch:
         - dev
@@ -208,21 +252,21 @@ pipeline:
     dns: 223.5.5.5
     pull: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock    
+      - /var/run/docker.sock:/var/run/docker.sock
     base: registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64
     dockerfile: .beagle/dockerfile
     repo: wod/awecloud-vscode
-    version: "v3.9.3"
+    version: "v3.10.2"
     channel: alpha-arm64
     args: "TARGETOS=linux,TARGETARCH=arm64"
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - dev
 
   harbor-arm64:
@@ -230,14 +274,14 @@ pipeline:
     dns: 223.5.5.5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-alpha-arm64
-    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.9.3-arm64
+    source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64
+    target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-arm64
     registry: registry.cn-qingdao.aliyuncs.com
-    secrets: 
+    secrets:
       - source: REGISTRY_USER_ALIYUN
         target: REGISTRY_USER
       - source: REGISTRY_PASSWORD_ALIYUN
         target: REGISTRY_PASSWORD
     when:
-      branch: 
+      branch:
         - master

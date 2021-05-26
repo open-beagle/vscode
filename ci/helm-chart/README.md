@@ -1,6 +1,6 @@
 # code-server
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.9.3](https://img.shields.io/badge/AppVersion-3.9.3-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.10.2](https://img.shields.io/badge/AppVersion-3.10.2-informational?style=flat-square)
 
 [code-server](https://github.com/cdr/code-server) code-server is VS Code running
 on a remote server, accessible through the browser.
@@ -65,6 +65,7 @@ and their default values.
 | extraArgs | list | `[]` |  |
 | extraConfigmapMounts | list | `[]` |  |
 | extraContainers | string | `""` |  |
+| extraInitContainers | string | `""` |  |
 | extraSecretMounts | list | `[]` |  |
 | extraVars | list | `[]` |  |
 | extraVolumeMounts | list | `[]` |  |
@@ -72,7 +73,7 @@ and their default values.
 | hostnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"codercom/code-server"` |  |
-| image.tag | string | `"3.9.3"` |  |
+| image.tag | string | `"3.10.2"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.enabled | bool | `false` |  |
 | nameOverride | string | `""` |  |
@@ -115,3 +116,47 @@ $ helm upgrade --install code-server ci/helm-chart -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+# Extra Containers
+
+There are two parameters which allow to add more containers to pod.
+Use `extraContainers` to add regular containers 
+and `extraInitContainers` to add init containers. You can read more
+about init containers in [k8s documentation](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
+
+Both parameters accept strings and use them as a templates
+
+Example of using `extraInitContainers`:
+
+``` yaml
+extraInitContainers: |
+  - name: customization
+    image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: SERVICE_URL
+        value: https://open-vsx.org/vscode/gallery
+      - name: ITEM_URL
+        value: https://open-vsx.org/vscode/item
+    command:
+      - sh
+      - -c
+      - |
+        code-server --install-extension ms-python.python
+        code-server --install-extension golang.Go
+    volumeMounts:
+      - name: data
+        mountPath: /home/coder
+
+```
+
+With this yaml in file `init.yaml`, you can execute 
+
+```console
+$ helm upgrade --install code-server \
+    ci/helm-chart \
+    --values init.yaml
+```
+
+to deploy code-server with python and golang extensions preinstalled
+before main container have started. 
