@@ -197,7 +197,7 @@ pipeline:
     volumes:
       - /data/cache/yarn/:/usr/local/share/.cache/yarn
     commands:
-      - rm -rf release-standalone release-gcp release-packages
+      - rm -rf release-standalone release-gcp release-packages test/node_modules
     when:
       branch:
         - dev
