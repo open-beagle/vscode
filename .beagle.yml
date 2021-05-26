@@ -191,6 +191,17 @@ pipeline:
       branch:
         - master
 
+  clean-node-arm64:
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster
+    dns: 223.5.5.5
+    volumes:
+      - /data/cache/yarn/:/usr/local/share/.cache/yarn
+    commands:
+      - rm -rf release-standalone release-gcp release-packages
+    when:
+      branch:
+        - dev
+
   read-cache-arm64:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
     pull: true
@@ -208,12 +219,11 @@ pipeline:
         - dev
 
   build-node-arm64:
-    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster-arm64
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster-arm64
     dns: 223.5.5.5
     volumes:
       - /data/cache/yarn-arm64/:/usr/local/share/.cache/yarn
     commands:
-      - rm -rf release-standalone release-gcp release-packages
       - yarn release:standalone
       - yarn test:standalone-release
       - yarn package
