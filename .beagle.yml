@@ -1,6 +1,10 @@
 kind: pipeline
 name: docker
 
+trigger:
+  branch:
+    - dev
+
 platform:
   runner: 10.11.92.36
 
