@@ -67,6 +67,7 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
+<<<<<<< HEAD
   registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye-amd64 \
   bash -c '
     yarn \
@@ -77,6 +78,19 @@ docker run \
       && yarn test:standalone-release \
       && yarn package \
       && exit'
+=======
+  registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-bullseye \
+  bash
+
+yarn \
+  && yarn build \
+  && yarn build:vscode \
+  && yarn release \
+  && yarn release:standalone \
+  && yarn test:standalone-release \
+  && yarn package \
+  && exit
+>>>>>>> v3.10.2
 
 # image
 docker build \
