@@ -67,7 +67,7 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-buster \
+  registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-bullseye \
   bash
 
 yarn \
@@ -81,7 +81,7 @@ yarn \
 
 # image
 docker build \
-  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
   --build-arg VERSION=v3.10.0 \
   --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha \
@@ -103,7 +103,7 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-buster-arm64 \
+  registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-bullseye-arm64 \
   bash
 
 yarn release:standalone \
@@ -141,7 +141,7 @@ docker run \
 
 # image arm64
 docker build \
-  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:buster-vscode-arm64 \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode-arm64 \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
   --build-arg VERSION=v3.10.0 \
   --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64 \
