@@ -174,6 +174,13 @@ steps:
       registry_password:
         from_secret: REGISTRY_PASSWORD_ALIYUN
 
+  - name: clean-node-arm64
+    image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye
+    commands:
+      - rm -rf ./release-standalone/node_modules/
+      - rm -rf ./release-standalone/lib/vscode/node_modules/
+      - rm -rf ./test/node_modules/
+
   - name: read-cache-arm64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
     volumes:
