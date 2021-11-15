@@ -6,7 +6,7 @@ Run VS Code on any machine anywhere and access it in the browser.
 ```bash
 git remote add upstream git@github.com:cdr/code-server.git
 git fetch upstream
-git merge v3.10.2
+git merge v3.12.0
 ```
 
 ## debug
