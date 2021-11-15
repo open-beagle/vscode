@@ -67,27 +67,26 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-node:12.22.1-bullseye \
-  bash
-
-yarn \
-  && yarn build \
-  && yarn build:vscode \
-  && yarn release \
-  && yarn release:standalone \
-  && yarn test:standalone-release \
-  && yarn package \
-  && exit
+  registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye-amd64 \
+  bash -c '
+    yarn \
+      && yarn build \
+      && yarn build:vscode \
+      && yarn release \
+      && yarn release:standalone \
+      && yarn test:standalone-release \
+      && yarn package \
+      && exit'
 
 # image
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.10.0 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha \
+  --build-arg VERSION=v3.10.2 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha
 ```
 
 ## image arm64
@@ -103,13 +102,12 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.16.1-bullseye-arm64 \
-  bash
-
-yarn release:standalone \
-  && yarn test:standalone-release \
-  && yarn package \
-  && exit
+  registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye-arm64 \
+  bash -c '
+    yarn release:standalone \
+      && yarn test:standalone-release \
+      && yarn package \
+      && exit'
 
 # store-cache
 docker run \
@@ -143,9 +141,9 @@ docker run \
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode-arm64 \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.10.0 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64 \
+  --build-arg VERSION=v3.10.2 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64 \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.0-alpha-arm64
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64
 ```
