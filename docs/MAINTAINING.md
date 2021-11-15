@@ -2,20 +2,20 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 # Maintaining
 
-- [Maintaining](#maintaining)
-  - [Workflow](#workflow)
-    - [Milestones](#milestones)
-    - [Triage](#triage)
-    - [Project Boards](#project-boards)
-  - [Versioning](#versioning)
-  - [Pull Requests](#pull-requests)
-    - [Merge Strategies](#merge-strategies)
-  - [Release](#release)
-    - [Release Manager Rotation](#release-manager-rotation)
+- [Workflow](#workflow)
+  - [Milestones](#milestones)
+  - [Triage](#triage)
+  - [Project boards](#project-boards)
+- [Versioning](#versioning)
+- [Pull requests](#pull-requests)
+  - [Merge strategies](#merge-strategies)
+  - [Changelog](#changelog)
+- [Releases](#releases)
+  - [Publishing a release](#publishing-a-release)
+- [Documentation](#documentation)
+  - [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# Maintaining
 
 Current maintainers:
 
@@ -23,70 +23,151 @@ Current maintainers:
 - @oxy
 - @jsjoeio
 
-This document is meant to serve current and future maintainers of code-server, but also share openly our workflow for maintaining the project.
+This document is meant to serve current and future maintainers of code-server,
+as well as share our workflow for maintaining the project.
 
 ## Workflow
 
-The workflow used by code-server maintainers is one that aims to be easy to understood by the community and easy enough for new maintainers to jump in and start contributing on day one.
+The workflow used by code-server maintainers aims to be easy to understood by
+the community and easy enough for new maintainers to jump in and start
+contributing on day one.
 
 ### Milestones
 
-We operate mainly using [milestones](https://github.com/cdr/code-server/milestones). This was heavily inspired by our friends over at [vscode](https://github.com/microsoft/vscode).
+We operate mainly using
+[milestones](https://github.com/cdr/code-server/milestones). This was heavily
+inspired by our friends over at [vscode](https://github.com/microsoft/vscode).
 
 Here are the milestones we use and how we use them:
 
 - "Backlog" -> Work not yet planned for a specific release.
 - "On Deck" -> Work under consideration for upcoming milestones.
-- "Backlog Candidates" -> Work that is not yet accepted for the backlog. We wait for the community to weigh in.
-- "<0.0.0>" -> Work to be done for that version.
+- "Backlog Candidates" -> Work that is not yet accepted for the backlog. We wait
+  for the community to weigh in.
+- "<0.0.0>" -> Work to be done for a specific version.
 
-With this flow, any un-assigned issues are essentially in triage state and once triaged are either "Backlog" or "Backlog Candidates". They will eventually move to "On Deck" (or be closed). Lastly, they will end up on a version milestone where they will be worked on.
+With this flow, any un-assigned issues are essentially in triage state. Once
+triaged, issues are either "Backlog" or "Backlog Candidates". They will
+eventually move to "On Deck" (or be closed). Lastly, they will end up on a
+version milestone where they will be worked on.
 
 ### Triage
 
 We use the following process for triaging GitHub issues:
 
-1. a submitter creates an issue
-1. add appropriate labels
-   1. if we need to look into it further, add "needs-investigation"
-1. add to milestone
-   1. if it should be fixed soon, add to version milestone or "On Deck"
-   1. if not urgent, add to "Backlog"
-   1. otherwise, add to "Backlog Candidate" if it should be considered
+1. Create an issue
+1. Add appropriate labels to the issue (including "needs-investigation" if we
+   should look into it further)
+1. Add the issue to a milestone
+   1. If it should be fixed soon, add to version milestone or "On Deck"
+   2. If not urgent, add to "Backlog"
+   3. Otherwise, add to "Backlog Candidate" for future consideration
 
-### Project Boards
+### Project boards
 
 We use project boards for projects or goals that span multiple milestones.
 
-Think of this as a place to put miscellaneous things (like testing, clean up stuff, etc). As a maintainer, random todos may come up here and there. This gives you a place to add notes temporarily before opening a new issue. Given that our release milestones function off of issues, we believe tasks should have dedicated issues.
+Think of this as a place to put miscellaneous things (like testing, clean up
+stuff, etc). As a maintainer, random tasks may come up here and there. The
+project boards give you places to add temporary notes before opening a new
+issue. Given that our release milestones function off of issues, we believe
+tasks should have dedicated issues.
 
-It also gives us a way to separate the issue triage from bigger-picture, long-term work.
+Project boards also give us a way to separate the issue triage from
+bigger-picture, long-term work.
 
 ## Versioning
 
 `<major.minor.patch>`
 
-The code-server project follows traditional [semantic versioning](https://semver.org/), with the objective of minimizing major changes that break backward compatibility. We increment the patch level for all releases, except when the upstream Visual Studio Code project increments its minor version or we change the plugin API in a backward-compatible manner. In those cases, we increment the minor version rather than the patch level.
+The code-server project follows traditional [semantic
+versioning](https://semver.org/), with the objective of minimizing major changes
+that break backward compatibility. We increment the patch level for all
+releases, except when the upstream Visual Studio Code project increments its
+minor version or we change the plugin API in a backward-compatible manner. In
+those cases, we increment the minor version rather than the patch level.
 
-## Pull Requests
+## Pull requests
 
-Ideally, every PR should fix an issue. If it doesn't, make sure it's associated with a version milestone.
+Ideally, every PR should fix an issue. If it doesn't, make sure it's associated
+with a version milestone.
 
-If a PR does fix an issue, don't add it to the version milestone. Otherwise, the version milestone will have duplicate information: the issue & the PR fixing the issue.
+If a PR does fix an issue, don't add it to the version milestone. Otherwise, the
+version milestone will have duplicate information: the issue and the PR fixing
+the issue.
 
-### Merge Strategies
+### Merge strategies
 
-For most things, we recommend "Squash and Merge". If you're updating `lib/vscode`, we suggest using the "Rebase and Merge" strategy. There may be times where "Create a merge commit" makes sense as well. Use your best judgement. If you're unsure, you can always discuss in the PR with the team.
-The code-server project follows traditional [semantic versioning](ttps://semver.org/), with the objective of minimizing major changes that break backward compatibility. We increment the patch level for all releases, except when the upstream Visual Studio Code project increments its minor version or we change the plugin API in a backward-compatible manner. In those cases, we increment the minor version rather than the patch level.
+For most things, we recommend the **squash and merge** strategy. If you're
+updating `lib/vscode`, we suggest using the **rebase and merge** strategy. There
+may be times where **creating a merge commit** makes sense as well. Use your
+best judgment. If you're unsure, you can always discuss in the PR with the team.
 
-## Release
+### Changelog
 
-### Release Manager Rotation
+To save time when creating a new release for code-server, we keep a running
+changelog at `CHANGELOG.md`.
 
-With each release, we rotate the role of "release manager" to ensure every maintainer goes through the process. This helps us keep documentation up-to-date and encourages us to continually review and improve the flow with each set of eyes.
+If either the author or reviewer of a PR believes the change should be mentioned
+in the changelog, then it should be added.
+
+If there is not a **Next Version** when you modify `CHANGELOG.md`, please add it
+using the template you see near the top of the changelog.
+
+When writing your changelog item, ask yourself:
+
+1. How do these changes affect code-server users?
+2. What actions do they need to take (if any)?
+
+If you need inspiration, we suggest looking at the [Emacs
+changelog](https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS).
+
+## Releases
+
+With each release, we rotate the role of release manager to ensure every
+maintainer goes through the process. This helps us keep documentation up-to-date
+and encourages us to continually review and improve the flow.
 
 If you're the current release manager, follow these steps:
 
 1. Create a [release issue](../.github/ISSUE_TEMPLATE/release.md)
-2. Fill out checklist
-3. After release is published, close release milestone
+1. Fill out checklist
+1. Publish the release
+1. After release is published, close release milestone
+
+### Publishing a release
+
+1. Run `yarn release:prep` and type in the new version (e.g., `3.8.1`)
+1. GitHub Actions will generate the `npm-package`, `release-packages` and
+   `release-images` artifacts. You do not have to wait for this step to complete
+   before proceeding.
+1. Run `yarn release:github-draft` to create a GitHub draft release from the
+   template with the updated version.
+1. Summarize the major changes in the release notes and link to the relevant
+   issues.
+1. Change the @ to target the version branch. Example: `v3.9.0 @ Target: v3.9.0`
+1. Wait for the `npm-package`, `release-packages` and `release-images` artifacts
+   to build.
+1. Run `yarn release:github-assets` to download the `release-packages` artifact.
+   They will upload them to the draft release.
+1. Run some basic sanity tests on one of the released packages (pay special
+   attention to making sure the terminal works).
+1. Publish the release and merge the PR. CI will automatically grab the
+   artifacts, publish the NPM package from `npm-package`, and publish the Docker
+   Hub image from `release-images`.
+1. Update the AUR package. Instructions for updating the AUR package are at
+   [cdr/code-server-aur](https://github.com/cdr/code-server-aur).
+1. Wait for the npm package to be published.
+
+## Documentation
+
+### Troubleshooting
+
+Our docs are hosted on [Vercel](https://vercel.com/). Vercel only shows logs in realtime, which means you need to have the logs open in one tab and reproduce your error in another tab. Since our logs are private to Coder the organization, you can only follow these steps if you're a Coder employee. Ask a maintainer for help if you need it.
+
+Taking a real scenario, let's say you wanted to troubleshoot [this docs change](https://github.com/cdr/code-server/pull/4042). Here is how you would do it:
+
+1. Go to https://vercel.com/codercom/codercom
+2. Click "View Function Logs"
+3. In a separate tab, open the preview link from github-actions-bot
+4. Now look at the function logs and see if there are errors in the logs

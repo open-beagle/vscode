@@ -19,18 +19,33 @@ main() {
   echo "Adding Homebrew/homebrew-core as $(upstream)"
   git remote add upstream https://github.com/Homebrew/homebrew-core.git
 
-  echo "Fetching upstream commits..."
+  echo "Fetching upstream Homebrew/hombrew-core commits"
   git fetch upstream
 
-  echo "Merging in latest changes"
+  echo "Merging in latest Homebrew/homebrew-core changes"
   git merge upstream/master
 
   echo "Pushing changes to cdrci/homebrew-core fork on GitHub"
-  git push origin master
+  # Source: https://serverfault.com/a/912788
+  # shellcheck disable=SC2016,SC2028
+  echo '#!/bin/sh\nexec echo "$HOMEBREW_GITHUB_API_TOKEN"' > "$HOME"/.git-askpass.sh
+  # Ensure it's executable since we just created it
+  chmod +x "$HOME/.git-askpass.sh"
+  # GIT_ASKPASS lets us use the password when pushing without revealing it in the process list
+  # See: https://serverfault.com/a/912788
+  GIT_ASKPASS="$HOME/.git-askpass.sh" git push https://cdr-oss@github.com/cdr-oss/homebrew-core.git --all
 
   # Find the docs for bump-formula-pr here
   # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/dev-cmd/bump-formula-pr.rb#L18
-  brew bump-formula-pr --force --version="${VERSION}" code-server --no-browse --no-audit
+  local output
+  if ! output=$(brew bump-formula-pr --version="${VERSION}" code-server --no-browse --no-audit 2>&1); then
+    if [[ $output == *"Duplicate PRs should not be opened"* ]]; then
+      echo "$VERSION is already submitted"
+    else
+      echo "$output"
+      exit 1
+    fi
+  fi
 
   # Clean up and remove homebrew-core
   cd ..

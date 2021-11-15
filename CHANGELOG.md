@@ -1,25 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-# Changelog
-
-- [Changelog](#changelog)
-  - [3.10.2](#3102)
-    - [New Features](#new-features)
-    - [Bug Fixes](#bug-fixes)
-    - [Development](#development)
-  - [3.10.1](#3101)
-    - [Bug Fixes](#bug-fixes-1)
-    - [Documentation](#documentation)
-    - [Development](#development-1)
-  - [3.10.0](#3100)
-    - [New Features](#new-features-1)
-    - [Bug Fixes](#bug-fixes-2)
-    - [Documentation](#documentation-1)
-    - [Development](#development-2)
-  - [Previous versions](#previous-versions)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Changelog
 
 <!--
@@ -54,6 +32,40 @@ VS Code v0.00.0
 - item
 
 -->
+
+## Next Version
+
+VS Code v0.00.0
+
+### New Features
+
+- item
+
+### Bug Fixes
+
+- Fix logout when using a base path (#3608)
+
+### Documentation
+
+- docs: add Pomerium #3424 @desimone
+- docs: fix confusing sentence in pull requests section #3460 @shiv-tyagi
+- docs: remove toc from changelog @oxy @jsjoeio
+- docs(MAINTAINING): add information about CHANGELOG #3467 @jsjoeio
+- docs: move release process to MAINTAINING.md #3441 @oxy @Prashant168
+- docs: format 'Caddy' from guide.md @PisecesPeng
+
+### Development
+
+- chore: cross-compile docker images with buildx #3166 @oxy
+- chore: update node to v14 #3458 @oxy
+- chore: update .gitignore #3557 @cuining
+- fix: use sufficient computational effort for password hash #3422 @jsjoeio
+- docs(CONTRIBUTING): add section on testing #3629 @jsjoeio
+
+### Development
+
+- fix(publish): update cdrci fork in brew-bump.sh #3468 @jsjoeio
+- chore(dev): migrate away from parcel #3578 @jsjoeio
 
 ## 3.10.2
 

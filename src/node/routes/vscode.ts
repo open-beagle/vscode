@@ -19,7 +19,8 @@ export const router = Router()
 const vscode = new VscodeProvider()
 
 router.get("/", async (req, res) => {
-  if (!authenticated(req)) {
+  const isAuthenticated = await authenticated(req)
+  if (!isAuthenticated) {
     return redirect(req, res, "login", {
       // req.baseUrl can be blank if already at the root.
       to: req.baseUrl && req.baseUrl !== "/" ? req.baseUrl : undefined,
@@ -48,7 +49,6 @@ router.get("/", async (req, res) => {
       !isDevMode ? content.replace(/<!-- PROD_ONLY/g, "").replace(/END_PROD_ONLY -->/g, "") : content,
       {
         authed: req.args.auth !== "none",
-        disableTelemetry: !!req.args["disable-telemetry"],
         disableUpdateCheck: !!req.args["disable-update-check"],
       },
     )
@@ -63,9 +63,10 @@ router.get("/", async (req, res) => {
  * TODO: Might currently be unused.
  */
 router.get("/resource(/*)?", ensureAuthenticated, async (req, res) => {
-  if (typeof req.query.path === "string") {
-    res.set("Content-Type", getMediaMime(req.query.path))
-    res.send(await fs.readFile(pathToFsPath(req.query.path)))
+  const path = getFirstString(req.query.path)
+  if (path) {
+    res.set("Content-Type", getMediaMime(path))
+    res.send(await fs.readFile(pathToFsPath(path)))
   }
 })
 
@@ -73,9 +74,10 @@ router.get("/resource(/*)?", ensureAuthenticated, async (req, res) => {
  * Used by VS Code to load files.
  */
 router.get("/vscode-remote-resource(/*)?", ensureAuthenticated, async (req, res) => {
-  if (typeof req.query.path === "string") {
-    res.set("Content-Type", getMediaMime(req.query.path))
-    res.send(await fs.readFile(pathToFsPath(req.query.path)))
+  const path = getFirstString(req.query.path)
+  if (path) {
+    res.set("Content-Type", getMediaMime(path))
+    res.send(await fs.readFile(pathToFsPath(path)))
   }
 })
 
@@ -164,7 +166,7 @@ router.get("/callback", ensureAuthenticated, async (req, res) => {
   callbacks.set(id, callback)
   callbackEmitter.emit({ id, callback })
 
-  res.sendFile(path.join(rootPath, "lib/vscode/resources/web/callback.html"))
+  res.sendFile(path.join(rootPath, "vendor/modules/code-oss-dev/resources/web/callback.html"))
 })
 
 router.get("/fetch-callback", ensureAuthenticated, async (req, res) => {
