@@ -34,54 +34,11 @@ steps:
       check: yarn.lock
       suffix: amd64
       mount:
-        - ./lib/coder-cloud-agent
-        - ./lib/vscode/build/node_modules/
-        - ./lib/vscode/build/lib/watch/node_modules/
-        - ./lib/vscode/extensions/configuration-editing/node_modules/
-        - ./lib/vscode/extensions/css-language-features/node_modules/
-        - ./lib/vscode/extensions/css-language-features/server/node_modules/
-        - ./lib/vscode/extensions/debug-auto-launch/node_modules/
-        - ./lib/vscode/extensions/debug-server-ready/node_modules/
-        - ./lib/vscode/extensions/emmet/node_modules/
-        - ./lib/vscode/extensions/extension-editing/node_modules/
-        - ./lib/vscode/extensions/git/node_modules/
-        - ./lib/vscode/extensions/github-authentication/node_modules/
-        - ./lib/vscode/extensions/github/node_modules/
-        - ./lib/vscode/extensions/grunt/node_modules/
-        - ./lib/vscode/extensions/gulp/node_modules/
-        - ./lib/vscode/extensions/html-language-features/node_modules/
-        - ./lib/vscode/extensions/html-language-features/server/node_modules/
-        - ./lib/vscode/extensions/image-preview/node_modules/
-        - ./lib/vscode/extensions/jake/node_modules/
-        - ./lib/vscode/extensions/json-language-features/node_modules/
-        - ./lib/vscode/extensions/json-language-features/server/node_modules/
-        - ./lib/vscode/extensions/markdown-language-features/node_modules/
-        - ./lib/vscode/extensions/merge-conflict/node_modules/
-        - ./lib/vscode/extensions/microsoft-authentication/node_modules/
-        - ./lib/vscode/extensions/node_modules/
-        - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
-        - ./lib/vscode/extensions/npm/node_modules/
-        - ./lib/vscode/extensions/php-language-features/node_modules/
-        - ./lib/vscode/extensions/search-result/node_modules/
-        - ./lib/vscode/extensions/simple-browser/node_modules/
-        - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
-        - ./lib/vscode/extensions/typescript-language-features/node_modules/
-        - ./lib/vscode/extensions/vscode-api-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
-        - ./lib/vscode/node_modules/
-        - ./lib/vscode/remote/node_modules/
-        - ./lib/vscode/remote/web/node_modules/
-        - ./lib/vscode/test/automation/node_modules/
-        - ./lib/vscode/test/integration/browser/node_modules/
-        - ./lib/vscode/test/monaco/node_modules/
-        - ./lib/vscode/test/smoke/node_modules/
         - ./node_modules/
         - ./release-standalone/node_modules/
-        - ./release-standalone/lib/vscode/node_modules/
+        - ./release-standalone/vendor/modules/code-oss-dev/node_modules/
         - ./test/node_modules/
+        - ./vendor/modules/
 
   - name: build-node-amd64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye-amd64
@@ -107,54 +64,12 @@ steps:
       check: yarn.lock
       suffix: amd64
       mount:
-        - ./lib/coder-cloud-agent
-        - ./lib/vscode/build/node_modules/
-        - ./lib/vscode/build/lib/watch/node_modules/
-        - ./lib/vscode/extensions/configuration-editing/node_modules/
-        - ./lib/vscode/extensions/css-language-features/node_modules/
-        - ./lib/vscode/extensions/css-language-features/server/node_modules/
-        - ./lib/vscode/extensions/debug-auto-launch/node_modules/
-        - ./lib/vscode/extensions/debug-server-ready/node_modules/
-        - ./lib/vscode/extensions/emmet/node_modules/
-        - ./lib/vscode/extensions/extension-editing/node_modules/
-        - ./lib/vscode/extensions/git/node_modules/
-        - ./lib/vscode/extensions/github-authentication/node_modules/
-        - ./lib/vscode/extensions/github/node_modules/
-        - ./lib/vscode/extensions/grunt/node_modules/
-        - ./lib/vscode/extensions/gulp/node_modules/
-        - ./lib/vscode/extensions/html-language-features/node_modules/
-        - ./lib/vscode/extensions/html-language-features/server/node_modules/
-        - ./lib/vscode/extensions/image-preview/node_modules/
-        - ./lib/vscode/extensions/jake/node_modules/
-        - ./lib/vscode/extensions/json-language-features/node_modules/
-        - ./lib/vscode/extensions/json-language-features/server/node_modules/
-        - ./lib/vscode/extensions/markdown-language-features/node_modules/
-        - ./lib/vscode/extensions/merge-conflict/node_modules/
-        - ./lib/vscode/extensions/microsoft-authentication/node_modules/
-        - ./lib/vscode/extensions/node_modules/
-        - ./lib/vscode/extensions/notebook-markdown-extensions/node_modules/
-        - ./lib/vscode/extensions/npm/node_modules/
-        - ./lib/vscode/extensions/php-language-features/node_modules/
-        - ./lib/vscode/extensions/search-result/node_modules/
-        - ./lib/vscode/extensions/simple-browser/node_modules/
-        - ./lib/vscode/extensions/testing-editor-contributions/node_modules/
-        - ./lib/vscode/extensions/typescript-language-features/node_modules/
-        - ./lib/vscode/extensions/vscode-api-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-colorize-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-notebook-tests/node_modules/
-        - ./lib/vscode/extensions/vscode-test-resolver/node_modules/
-        - ./lib/vscode/node_modules/
-        - ./lib/vscode/remote/node_modules/
-        - ./lib/vscode/remote/web/node_modules/
-        - ./lib/vscode/test/automation/node_modules/
-        - ./lib/vscode/test/integration/browser/node_modules/
-        - ./lib/vscode/test/monaco/node_modules/
-        - ./lib/vscode/test/smoke/node_modules/
+      mount:
         - ./node_modules/
         - ./release-standalone/node_modules/
-        - ./release-standalone/lib/vscode/node_modules/
+        - ./release-standalone/vendor/modules/code-oss-dev/node_modules/
         - ./test/node_modules/
+        - ./vendor/modules/
 
   - name: docker-amd64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-docker:1.0
@@ -165,7 +80,7 @@ steps:
       dockerfile: .beagle/dockerfile
       base: registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode
       repo: wod/awecloud-vscode
-      version: "v3.10.2"
+      version: "v3.12.0"
       channel: alpha-amd64
       args: "TARGETOS=linux,TARGETARCH=amd64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -178,7 +93,7 @@ steps:
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye
     commands:
       - rm -rf ./release-standalone/node_modules/
-      - rm -rf ./release-standalone/lib/vscode/node_modules/
+      - rm -rf ./release-standalone/vendor/modules/code-oss-dev/node_modules/
       - rm -rf ./test/node_modules/
 
   - name: read-cache-arm64
@@ -192,7 +107,7 @@ steps:
       suffix: arm64
       mount:
         - ./release-standalone/node_modules/
-        - ./release-standalone/lib/vscode/node_modules/
+        - ./release-standalone/vendor/modules/code-oss-dev/node_modules/
         - ./test/node_modules/
 
   - name: build-node-arm64
@@ -216,7 +131,7 @@ steps:
       suffix: arm64
       mount:
         - ./release-standalone/node_modules/
-        - ./release-standalone/lib/vscode/node_modules/
+        - ./release-standalone/vendor/modules/code-oss-dev/node_modules/
         - ./test/node_modules/
 
   - name: docker-arm64
@@ -228,7 +143,7 @@ steps:
       dockerfile: .beagle/dockerfile
       base: registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode-arm64
       repo: wod/awecloud-vscode
-      version: "v3.10.2"
+      version: "v3.12.0"
       channel: alpha-arm64
       args: "TARGETOS=linux,TARGETARCH=arm64"
       registry: registry.cn-qingdao.aliyuncs.com
@@ -244,8 +159,8 @@ steps:
         path: /var/run/docker.sock
     settings:
       platforms: linux/amd64,linux/arm64
-      template: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-ARCH
-      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha
+      template: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha-ARCH
+      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha
       username:
         from_secret: REGISTRY_USER_ALIYUN
       password:
@@ -277,8 +192,8 @@ steps:
       - name: docker
         path: /var/run/docker.sock
     settings:
-      source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-amd64
-      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-amd64
+      source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha-amd64
+      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-amd64
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN
@@ -291,8 +206,8 @@ steps:
       - name: docker
         path: /var/run/docker.sock
     settings:
-      source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64
-      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-arm64
+      source: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha-arm64
+      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-arm64
       registry: registry.cn-qingdao.aliyuncs.com
       registry_user:
         from_secret: REGISTRY_USER_ALIYUN
@@ -306,8 +221,8 @@ steps:
         path: /var/run/docker.sock
     settings:
       platforms: linux/amd64,linux/arm64
-      template: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-ARCH
-      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2
+      template: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-ARCH
+      target: registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0
       username:
         from_secret: REGISTRY_USER_ALIYUN
       password:

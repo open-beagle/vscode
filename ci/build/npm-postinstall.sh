@@ -4,16 +4,16 @@ set -eu
 # Copied from arch() in ci/lib.sh.
 detect_arch() {
   case "$(uname -m)" in
-    aarch64)
-      echo arm64
-      ;;
-    x86_64 | amd64)
-      echo amd64
-      ;;
-    *)
-      # This will cause the download to fail, but is intentional
-      uname -m
-      ;;
+  aarch64)
+    echo arm64
+    ;;
+  x86_64 | amd64)
+    echo amd64
+    ;;
+  *)
+    # This will cause the download to fail, but is intentional
+    uname -m
+    ;;
   esac
 }
 
@@ -99,18 +99,18 @@ symlink_asar() {
 vscode_yarn() {
   echo 'Installing vendor dependencies...'
   cd vendor/modules/code-oss-dev
-  yarn --production --frozen-lockfile
+  yarn --production
 
   symlink_asar
 
   cd extensions
-  yarn --production --frozen-lockfile
+  yarn --production
 
   for ext in */; do
     ext="${ext%/}"
     echo "extensions/$ext: installing dependencies"
     cd "$ext"
-    yarn --production --frozen-lockfile
+    yarn --production
     cd "$OLDPWD"
   done
 }

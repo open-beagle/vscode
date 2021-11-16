@@ -15,9 +15,9 @@ main() {
     mv "$RELEASE_PATH-standalone/node_modules" /tmp/cloud/vscode/release-standalone/
   fi
 
-  if [[ -d "$RELEASE_PATH-standalone/lib/vscode/node_modules" ]]; then
-    mkdir -p /tmp/cloud/vscode/release-standalone/lib/vscode
-    mv "$RELEASE_PATH-standalone/lib/vscode/node_modules" /tmp/cloud/vscode/release-standalone/lib/vscode/
+  if [[ -d "$RELEASE_PATH-standalone/vendor/modules/code-oss-dev/node_modules" ]]; then
+    mkdir -p /tmp/cloud/vscode/release-standalone/vendor/modules/code-oss-dev/node_modules
+    mv "$RELEASE_PATH-standalone/vendor/modules/code-oss-dev/node_modules" /tmp/cloud/vscode/release-standalone/vendor/modules/code-oss-dev/
   fi
 
   rsync "$RELEASE_PATH/" "$RELEASE_PATH-standalone"
@@ -27,7 +27,7 @@ main() {
   # we use the same version it's using so we instead run a script with yarn that
   # will print the path to node.
   local node_path
-  node_path="$(yarn -s node <<< 'console.info(process.execPath)')"
+  node_path="$(yarn -s node <<<'console.info(process.execPath)')"
 
   mkdir -p "$RELEASE_PATH/bin"
   mkdir -p "$RELEASE_PATH/lib"
@@ -41,12 +41,12 @@ main() {
     mv /tmp/cloud/vscode/release-standalone/node_modules "$RELEASE_PATH/"
   fi
 
-  if [[ -d "/tmp/cloud/vscode/release-standalone/lib/vscode/node_modules" ]]; then
-    mv /tmp/cloud/vscode/release-standalone/lib/vscode/node_modules "$RELEASE_PATH/lib/vscode/"
+  if [[ -d "/tmp/cloud/vscode/release-standalone/vendor/modules/code-oss-dev/node_modules" ]]; then
+    mv /tmp/cloud/vscode/release-standalone/vendor/modules/code-oss-dev/node_modules "$RELEASE_PATH/vendor/modules/code-oss-dev/"
   fi
 
   cd "$RELEASE_PATH"
-  yarn --production --frozen-lockfile
+  yarn --production
 
   # HACK: the version of Typescript vscode 1.57 uses in extensions/
   # leaves a few stray symlinks. Clean them up so nfpm does not fail.

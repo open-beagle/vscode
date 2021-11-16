@@ -37,7 +37,7 @@ docker run \
   -e PLUGIN_REBUILD=true \
   -e PLUGIN_CHECK=yarn.lock \
   -e PLUGIN_SUFFIX=amd64 \
-  -e PLUGIN_MOUNT=./lib/coder-cloud-agent,./lib/vscode/build/lib/watch/node_modules/,./lib/vscode/build/node_modules/,./lib/vscode/extensions/configuration-editing/node_modules/,./lib/vscode/extensions/css-language-features/node_modules/,./lib/vscode/extensions/css-language-features/server/node_modules/,./lib/vscode/extensions/debug-auto-launch/node_modules/,./lib/vscode/extensions/debug-server-ready/node_modules/,./lib/vscode/extensions/emmet/node_modules/,./lib/vscode/extensions/extension-editing/node_modules/,./lib/vscode/extensions/git/node_modules/,./lib/vscode/extensions/github-authentication/node_modules/,./lib/vscode/extensions/github/node_modules/,./lib/vscode/extensions/grunt/node_modules/,./lib/vscode/extensions/gulp/node_modules/,./lib/vscode/extensions/html-language-features/node_modules/,./lib/vscode/extensions/html-language-features/server/node_modules/,./lib/vscode/extensions/image-preview/node_modules/,./lib/vscode/extensions/jake/node_modules/,./lib/vscode/extensions/json-language-features/node_modules/,./lib/vscode/extensions/json-language-features/server/node_modules/,./lib/vscode/extensions/markdown-language-features/node_modules/,./lib/vscode/extensions/merge-conflict/node_modules/,./lib/vscode/extensions/microsoft-authentication/node_modules/,./lib/vscode/extensions/node_modules/,./lib/vscode/extensions/notebook-markdown-extensions/node_modules/,./lib/vscode/extensions/npm/node_modules/,./lib/vscode/extensions/php-language-features/node_modules/,./lib/vscode/extensions/search-result/node_modules/,./lib/vscode/extensions/simple-browser/node_modules/,./lib/vscode/extensions/testing-editor-contributions/node_modules/,./lib/vscode/extensions/typescript-language-features/node_modules/,./lib/vscode/extensions/vscode-api-tests/node_modules/,./lib/vscode/extensions/vscode-colorize-tests/node_modules/,./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/,./lib/vscode/extensions/vscode-notebook-tests/node_modules/,./lib/vscode/extensions/vscode-test-resolver/node_modules/,./lib/vscode/node_modules/,./lib/vscode/remote/node_modules/,./lib/vscode/remote/web/node_modules/,./lib/vscode/test/automation/node_modules/,./lib/vscode/test/integration/browser/node_modules/,./lib/vscode/test/monaco/node_modules/,./lib/vscode/test/smoke/node_modules/,./node_modules/,./release-standalone/node_modules/,./release-standalone/lib/vscode/node_modules,./test/node_modules/ \
+  -e PLUGIN_MOUNT=./node_modules/,./release-standalone/node_modules/,./release-standalone/vendor/modules/code-oss-dev/node_modules/,./test/node_modules/,./vendor/modules/ \
   -e DRONE_COMMIT_BRANCH=dev \
   -e CI_WORKSPACE=/go/src/gitlab.wodcloud.com/cloud/vscode \
   registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
@@ -51,7 +51,7 @@ docker run \
   -e PLUGIN_RESTORE=true \
   -e PLUGIN_CHECK=yarn.lock \
   -e PLUGIN_SUFFIX=amd64 \
-  -e PLUGIN_MOUNT=./lib/coder-cloud-agent,./lib/vscode/build/lib/watch/node_modules/,./lib/vscode/build/node_modules/,./lib/vscode/extensions/configuration-editing/node_modules/,./lib/vscode/extensions/css-language-features/node_modules/,./lib/vscode/extensions/css-language-features/server/node_modules/,./lib/vscode/extensions/debug-auto-launch/node_modules/,./lib/vscode/extensions/debug-server-ready/node_modules/,./lib/vscode/extensions/emmet/node_modules/,./lib/vscode/extensions/extension-editing/node_modules/,./lib/vscode/extensions/git/node_modules/,./lib/vscode/extensions/github-authentication/node_modules/,./lib/vscode/extensions/github/node_modules/,./lib/vscode/extensions/grunt/node_modules/,./lib/vscode/extensions/gulp/node_modules/,./lib/vscode/extensions/html-language-features/node_modules/,./lib/vscode/extensions/html-language-features/server/node_modules/,./lib/vscode/extensions/image-preview/node_modules/,./lib/vscode/extensions/jake/node_modules/,./lib/vscode/extensions/json-language-features/node_modules/,./lib/vscode/extensions/json-language-features/server/node_modules/,./lib/vscode/extensions/markdown-language-features/node_modules/,./lib/vscode/extensions/merge-conflict/node_modules/,./lib/vscode/extensions/microsoft-authentication/node_modules/,./lib/vscode/extensions/node_modules/,./lib/vscode/extensions/notebook-markdown-extensions/node_modules/,./lib/vscode/extensions/npm/node_modules/,./lib/vscode/extensions/php-language-features/node_modules/,./lib/vscode/extensions/search-result/node_modules/,./lib/vscode/extensions/simple-browser/node_modules/,./lib/vscode/extensions/testing-editor-contributions/node_modules/,./lib/vscode/extensions/typescript-language-features/node_modules/,./lib/vscode/extensions/vscode-api-tests/node_modules/,./lib/vscode/extensions/vscode-colorize-tests/node_modules/,./lib/vscode/extensions/vscode-custom-editor-tests/node_modules/,./lib/vscode/extensions/vscode-notebook-tests/node_modules/,./lib/vscode/extensions/vscode-test-resolver/node_modules/,./lib/vscode/node_modules/,./lib/vscode/remote/node_modules/,./lib/vscode/remote/web/node_modules/,./lib/vscode/test/automation/node_modules/,./lib/vscode/test/integration/browser/node_modules/,./lib/vscode/test/monaco/node_modules/,./lib/vscode/test/smoke/node_modules/,./node_modules/,./release-standalone/node_modules/,./release-standalone/lib/vscode/node_modules,./test/node_modules/ \
+  -e PLUGIN_MOUNT=./node_modules/,./release-standalone/node_modules/,./release-standalone/vendor/modules/code-oss-dev/node_modules/,./test/node_modules/,./vendor/modules/ \
   -e DRONE_COMMIT_BRANCH=dev \
   -e CI_WORKSPACE=/go/src/gitlab.wodcloud.com/cloud/vscode \
   registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
@@ -67,6 +67,7 @@ docker run \
   -v $PWD/:/go/src/gitlab.wodcloud.com/cloud/vscode \
   -v /usr/local/share/.cache/yarn/:/usr/local/share/.cache/yarn/ \
   -w /go/src/gitlab.wodcloud.com/cloud/vscode \
+  -e CXX=g++-10 \
   registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye-amd64 \
   bash -c '
     yarn \
@@ -118,10 +119,10 @@ docker run \
   -e PLUGIN_REBUILD=true \
   -e PLUGIN_CHECK=yarn.lock \
   -e PLUGIN_SUFFIX=arm64 \
-  -e PLUGIN_MOUNT=./release-standalone/node_modules/,./release-standalone/lib/vscode/node_modules,./test/node_modules/ \
+  -e PLUGIN_MOUNT=./release-standalone/node_modules/,./release-standalone/vendor/modules/code-oss-dev/node_modules/ \
   -e DRONE_COMMIT_BRANCH=dev \
   -e CI_WORKSPACE=/go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0.4-alpha
+  registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
 
 # read-cache
 docker run \
@@ -132,10 +133,10 @@ docker run \
   -e PLUGIN_RESTORE=true \
   -e PLUGIN_CHECK=yarn.lock \
   -e PLUGIN_SUFFIX=arm64 \
-  -e PLUGIN_MOUNT=./release-standalone/node_modules/,./release-standalone/lib/vscode/node_modules,./test/node_modules/ \
+  -e PLUGIN_MOUNT=./release-standalone/node_modules/,./release-standalone/vendor/modules/code-oss-dev/node_modules/ \
   -e DRONE_COMMIT_BRANCH=dev \
   -e CI_WORKSPACE=/go/src/gitlab.wodcloud.com/cloud/vscode \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0.4-alpha
+  registry.cn-qingdao.aliyuncs.com/wod/devops-cache:1.0
 
 # image arm64
 docker build \
