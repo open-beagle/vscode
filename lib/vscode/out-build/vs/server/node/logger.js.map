@@ -1,1 +1,0 @@
-{"version":3,"file":"logger.js","sourceRoot":"file:///go/src/gitlab.wodcloud.com/cloud/vscode/lib/vscode/src","sources":["vs/server/node/logger.ts"],"names":[],"mappings":";;;;IACa,QAAA,MAAM,GAAG,eAAU,CAAC,KAAK,CAAC,QAAQ,CAAC,CAAC","sourcesContent":["import { logger as baseLogger } from '@coder/logger';\nexport const logger = baseLogger.named('vscode');\n"]}
