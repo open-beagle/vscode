@@ -92,6 +92,7 @@ steps:
   - name: clean-node-arm64
     image: registry.cn-qingdao.aliyuncs.com/wod/devops-node:14.18.1-bullseye
     commands:
+      - rm -rf ./release-packages/
       - rm -rf ./release-standalone/node_modules/
       - rm -rf ./release-standalone/vendor/modules/code-oss-dev/node_modules/
       - rm -rf ./test/node_modules/
