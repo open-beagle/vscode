@@ -58,9 +58,10 @@ get_nfpm_arch() {
 # Generates deb and rpm packages.
 release_nfpm() {
   local nfpm_config
+  export NFPM_ARCH
 
   PKG_FORMAT="deb"
-  NFPM_ARCH="$(get_nfpm_arch)"
+  NFPM_ARCH=$ARCH
   nfpm_config="$(envsubst < ./ci/build/nfpm.yaml)"
   nfpm pkg -f <(echo "$nfpm_config") --target "release-packages/code-server_${VERSION}_${NFPM_ARCH}.deb"
 

@@ -15,7 +15,7 @@ git merge v3.12.0
 # wsl prepare env
 apt install -y jq g++
 export TARGETARCH=amd64
-curl https://dl.wodcloud.com/vscode/nfpm/v2.5.1/nfpm_$TARGETARCH.deb >/tmp/nfpm_$TARGETARCH.deb \
+curl https://dl.wodcloud.com/vscode/nfpm/v2.5.1/nfpm_$TARGETARCH.deb > /tmp/nfpm_$TARGETARCH.deb \
   && dpkg -i /tmp/nfpm_$TARGETARCH.deb \
   && rm -rf /tmp/nfpm_$TARGETARCH.deb
 
@@ -83,11 +83,11 @@ docker run \
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.10.2 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha \
+  --build-arg VERSION=v3.12.0 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha
 ```
 
 ## image arm64
@@ -142,9 +142,9 @@ docker run \
 docker build \
   --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/debian:bullseye-vscode-arm64 \
   --build-arg AUTHOR=shucheng@bd-apaas.com \
-  --build-arg VERSION=v3.10.2 \
-  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64 \
+  --build-arg VERSION=v3.12.0 \
+  --tag registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha-arm64 \
   --file .beagle/dockerfile .
 
-docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.10.2-alpha-arm64
+docker push registry.cn-qingdao.aliyuncs.com/wod/awecloud-vscode:v3.12.0-alpha-arm64
 ```
