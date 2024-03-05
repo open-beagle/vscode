@@ -5,8 +5,8 @@ trigger:
   branch:
     - dev
 
-platform:
-  runner: 10.11.92.36
+# platform:
+#   runner: 10.11.92.36
 
 volumes:
   - name: cache
