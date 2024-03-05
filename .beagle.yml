@@ -46,6 +46,7 @@ steps:
       - name: yarn
         path: /usr/local/share/.cache/yarn
     commands:
+      - yarn config set registry https://registry.npmmirror.com
       - yarn
       - yarn build
       - yarn build:vscode
